@@ -15,8 +15,9 @@
     <link rel="icon" href="img/core-img/favicon.ico">
 
     <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="<?php echo get_stylesheet_uri() ?>">
 
+    <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
     <!-- ##### Header Area Start ##### -->
