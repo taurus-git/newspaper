@@ -184,6 +184,3 @@
         </div>
     </header>
     <!-- ##### Header Area End ##### -->
-
-    <!-- ##### Hero Area Start ##### -->
-    <div class="hero-area">

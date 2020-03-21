@@ -1,3 +1,4 @@
+<!-- ##### Footer Area Start ##### -->
 <footer class="footer-area">
 
     <!-- Main Footer Area -->
