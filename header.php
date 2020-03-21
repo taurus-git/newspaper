@@ -12,10 +12,7 @@
     <title>The News Paper - News &amp; Lifestyle Magazine Template</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="img/core-img/favicon.ico">
-
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="<?php echo get_stylesheet_uri() ?>">
+    <link rel="icon" href="<?php echo get_template_directory_uri() ?>/assets/img/core-img/favicon.ico">
 
     <?php wp_head(); ?>
 </head>
