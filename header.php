@@ -28,7 +28,9 @@
                         <div class="top-header-content d-flex align-items-center justify-content-between">
                             <!-- Logo -->
                             <div class="logo">
-                                <a href="index.html"><img src="img/core-img/logo.png" alt=""></a>
+                                <a href="<?php echo get_home_url(null, '/');?>">
+                                    <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
+                                </a>
                             </div>
 
                             <!-- Login Search Area -->
