@@ -29,6 +29,7 @@
                             <!-- Logo -->
                             <div class="logo">
                                 <a href="<?php echo get_home_url(null, '/');?>">
+                                    //TODO: add alt value
                                     <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
                                 </a>
                             </div>
@@ -63,7 +64,10 @@
 
                         <!-- Logo -->
                         <div class="logo">
-                            <a href="index.html"><img src="img/core-img/logo.png" alt=""></a>
+                            <a href="<?php echo get_home_url(null, '/');?>">
+                                //TODO: add alt value
+                                <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
+                            </a>
                         </div>
 
                         <!-- Navbar Toggler -->
@@ -82,17 +86,17 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li class="active"><a href="index.html">Home</a></li>
+                                    <li class="active"><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                     <li><a href="#">Pages</a>
                                         <ul class="dropdown">
-                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                             <li><a href="catagories-post.html">Catagories</a></li>
                                             <li><a href="single-post.html">Single Articles</a></li>
                                             <li><a href="about.html">About Us</a></li>
                                             <li><a href="contact.html">Contact</a></li>
                                             <li><a href="#">Dropdown</a>
                                                 <ul class="dropdown">
-                                                    <li><a href="index.html">Home</a></li>
+                                                    <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                     <li><a href="catagories-post.html">Catagories</a></li>
                                                     <li><a href="single-post.html">Single Articles</a></li>
                                                     <li><a href="about.html">About Us</a></li>
@@ -105,7 +109,7 @@
                                         <div class="megamenu">
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -113,7 +117,7 @@
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -121,7 +125,7 @@
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
