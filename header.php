@@ -12,10 +12,7 @@
     <title>The News Paper - News &amp; Lifestyle Magazine Template</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="img/core-img/favicon.ico">
-
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="<?php echo get_stylesheet_uri() ?>">
+    <link rel="icon" href="<?php echo get_template_directory_uri() ?>/assets/img/core-img/favicon.ico">
 
     <?php wp_head(); ?>
 </head>
@@ -31,7 +28,10 @@
                         <div class="top-header-content d-flex align-items-center justify-content-between">
                             <!-- Logo -->
                             <div class="logo">
-                                <a href="index.html"><img src="img/core-img/logo.png" alt=""></a>
+                                <a href="<?php echo get_home_url(null, '/');?>">
+                                    //TODO: add alt value
+                                    <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
+                                </a>
                             </div>
 
                             <!-- Login Search Area -->
@@ -64,7 +64,10 @@
 
                         <!-- Logo -->
                         <div class="logo">
-                            <a href="index.html"><img src="img/core-img/logo.png" alt=""></a>
+                            <a href="<?php echo get_home_url(null, '/');?>">
+                                //TODO: add alt value
+                                <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
+                            </a>
                         </div>
 
                         <!-- Navbar Toggler -->
@@ -83,17 +86,17 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul>
-                                    <li class="active"><a href="index.html">Home</a></li>
+                                    <li class="active"><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                     <li><a href="#">Pages</a>
                                         <ul class="dropdown">
-                                            <li><a href="index.html">Home</a></li>
+                                            <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                             <li><a href="catagories-post.html">Catagories</a></li>
                                             <li><a href="single-post.html">Single Articles</a></li>
                                             <li><a href="about.html">About Us</a></li>
                                             <li><a href="contact.html">Contact</a></li>
                                             <li><a href="#">Dropdown</a>
                                                 <ul class="dropdown">
-                                                    <li><a href="index.html">Home</a></li>
+                                                    <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                     <li><a href="catagories-post.html">Catagories</a></li>
                                                     <li><a href="single-post.html">Single Articles</a></li>
                                                     <li><a href="about.html">About Us</a></li>
@@ -106,7 +109,7 @@
                                         <div class="megamenu">
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -114,7 +117,7 @@
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -122,7 +125,7 @@
                                             </ul>
                                             <ul class="single-mega cn-col-4">
                                                 <li class="title">Catagories</li>
-                                                <li><a href="index.html">Home</a></li>
+                                                <li><a href="<?php echo get_home_url(null, '/');?>">Home</a></li>
                                                 <li><a href="catagories-post.html">Catagories</a></li>
                                                 <li><a href="single-post.html">Single Articles</a></li>
                                                 <li><a href="about.html">About Us</a></li>
@@ -181,6 +184,3 @@
         </div>
     </header>
     <!-- ##### Header Area End ##### -->
-
-    <!-- ##### Hero Area Start ##### -->
-    <div class="hero-area">
