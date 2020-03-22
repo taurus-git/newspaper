@@ -1,4 +1,7 @@
 <?php
+
+require_once 'inc/cpt/news.php';
+
 add_action( 'wp_enqueue_scripts', 'add_theme_styles' );
 function add_theme_styles() {
     wp_register_style('newspaper-styles',get_template_directory_uri() . '/style.css', array(), null);
