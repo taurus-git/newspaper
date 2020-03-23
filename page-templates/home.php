@@ -4,13 +4,8 @@
  */
 
 get_header();
-
 $latest_news = get_latest_news();
-
-
 ?>
-
-
     <!-- ##### Hero Area Start ##### -->
     <div class="hero-area">
         <div class="container">

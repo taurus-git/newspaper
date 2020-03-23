@@ -189,17 +189,15 @@ function get_latest_news(){
     $breaking_news = get_breaking_news();
     $international_news = get_international_news();
 
-    //if (!$breaking_news && !$international_news) return;
-
+    if (!$breaking_news && !$international_news) return;
 
     ob_start();?>
     <div class="col-12 col-lg-8">
-        <!-- Breaking News Widget -->
+
         <?php if($breaking_news): echo $breaking_news;?>
         <?php endif;?>
 
         <?php if($international_news): echo $international_news;?>
-        <!-- Breaking News Widget -->
         <?php endif;?>
 
     </div>
@@ -222,7 +220,11 @@ function get_breaking_news () {
                 <ul>
                     <?php
                     foreach ($breaking_news as $news) { ?>
-                        <li><a href="#"><?php echo $news["breaking_news_list"]->post_title; ?></a></li>
+                        <li>
+                            <a href="<?php echo get_post_permalink($news["breaking_news_list"]->ID); ?>">
+                                <?php echo $news["breaking_news_list"]->post_title; ?>
+                            </a>
+                        </li>
                     <?php
                     }?>
                 </ul>
@@ -244,9 +246,15 @@ function get_international_news () {
             </div>
             <div id="internationalTicker" class="ticker">
                 <ul>
-                    <li><a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</a></li>
-                    <li><a href="#">Welcome to Colorlib Family.</a></li>
-                    <li><a href="#">Nam eu metus sitsit amet, consec!</a></li>
+                    <?php
+                    foreach ($international_news as $news) { ?>
+                        <li>
+                            <a href="<?php echo get_post_permalink($news["international_news_list"]->ID); ?>">
+                                <?php echo $news["international_news_list"]->post_title; ?>
+                            </a>
+                        </li>
+                        <?php
+                    }?>
                 </ul>
             </div>
         </div>
