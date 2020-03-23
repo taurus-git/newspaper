@@ -68,3 +68,188 @@ function newspaper_register_news_category() {
 }
 
 add_action( 'init', 'newspaper_register_news_category' );
+
+
+if( function_exists('acf_add_local_field_group') ):
+
+    acf_add_local_field_group(array(
+        'key' => 'group_5e776264706aa',
+        'title' => 'Latest news',
+        'fields' => array(
+            array(
+                'key' => 'field_5e77627df5378',
+                'label' => 'Breaking news',
+                'name' => 'breaking_news',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e7762b3f5379',
+                        'label' => 'Breaking news list',
+                        'name' => 'breaking_news_list',
+                        'type' => 'post_object',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => array(
+                            0 => 'news',
+                        ),
+                        'taxonomy' => '',
+                        'allow_null' => 0,
+                        'multiple' => 0,
+                        'return_format' => 'object',
+                        'ui' => 1,
+                    ),
+                ),
+            ),
+            array(
+                'key' => 'field_5e77631cf537a',
+                'label' => 'International news',
+                'name' => 'international_news',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e77633ff537b',
+                        'label' => 'International news list',
+                        'name' => 'international_news_list',
+                        'type' => 'post_object',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => array(
+                            0 => 'news',
+                        ),
+                        'taxonomy' => '',
+                        'allow_null' => 0,
+                        'multiple' => 0,
+                        'return_format' => 'object',
+                        'ui' => 1,
+                    ),
+                ),
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'page_template',
+                    'operator' => '==',
+                    'value' => 'page-templates/home.php',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
+endif;
+
+
+function get_latest_news(){
+    $breaking_news = get_breaking_news();
+    $international_news = get_international_news();
+
+    //if (!$breaking_news && !$international_news) return;
+
+
+    ob_start();?>
+    <div class="col-12 col-lg-8">
+        <!-- Breaking News Widget -->
+        <?php if($breaking_news): echo $breaking_news;?>
+        <?php endif;?>
+
+        <?php if($international_news): echo $international_news;?>
+        <!-- Breaking News Widget -->
+        <?php endif;?>
+
+    </div>
+    <?php
+    return ob_get_clean();
+
+}
+
+function get_breaking_news () {
+    $breaking_news = get_field('breaking_news');
+    if (empty($breaking_news)) return;
+
+        ob_start(); ?>
+        <!-- Breaking News Widget -->
+        <div class="breaking-news-area d-flex align-items-center">
+            <div class="news-title">
+                <p>Breaking News</p>
+            </div>
+            <div id="breakingNewsTicker" class="ticker">
+                <ul>
+                    <?php
+                    foreach ($breaking_news as $news) { ?>
+                        <li><a href="#"><?php echo $news["breaking_news_list"]->post_title; ?></a></li>
+                    <?php
+                    }?>
+                </ul>
+            </div>
+        </div>
+    <?php
+    return ob_get_clean();
+}
+
+function get_international_news () {
+    $international_news = get_field('international_news');
+    if( empty($international_news) ) return;
+
+    ob_start();?>
+        <!-- Breaking News Widget -->
+        <div class="breaking-news-area d-flex align-items-center mt-15">
+            <div class="news-title title2">
+                <p>International</p>
+            </div>
+            <div id="internationalTicker" class="ticker">
+                <ul>
+                    <li><a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</a></li>
+                    <li><a href="#">Welcome to Colorlib Family.</a></li>
+                    <li><a href="#">Nam eu metus sitsit amet, consec!</a></li>
+                </ul>
+            </div>
+        </div>
+    <?php
+    return ob_get_clean();
+}
