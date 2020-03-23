@@ -166,9 +166,9 @@ if( function_exists('acf_add_local_field_group') ):
         'location' => array(
             array(
                 array(
-                    'param' => 'page_template',
+                    'param' => 'block',
                     'operator' => '==',
-                    'value' => 'page-templates/home.php',
+                    'value' => 'acf/testimonial',
                 ),
             ),
         ),
@@ -184,8 +184,24 @@ if( function_exists('acf_add_local_field_group') ):
 
 endif;
 
+add_action('acf/init', 'my_acf_blocks_init');
+function my_acf_blocks_init() {
 
-function get_latest_news(){
+    // Check function exists.
+    if( function_exists('acf_register_block_type') ) {
+
+        // Register a testimonial block.
+        acf_register_block_type(array(
+            'name'              => 'testimonial',
+            'title'             => __('Testimonial'),
+            'description'       => __('A custom testimonial block.'),
+            'render_template'   => 'template-parts/blocks/testimonial/testimonial.php',
+            'category'          => 'formatting',
+        ));
+    }
+}
+
+function get_latest_news (){
     $breaking_news = get_breaking_news();
     $international_news = get_international_news();
 
@@ -210,26 +226,26 @@ function get_breaking_news () {
     $breaking_news = get_field('breaking_news');
     if (empty($breaking_news)) return;
 
-        ob_start(); ?>
-        <!-- Breaking News Widget -->
-        <div class="breaking-news-area d-flex align-items-center">
-            <div class="news-title">
-                <p>Breaking News</p>
-            </div>
-            <div id="breakingNewsTicker" class="ticker">
-                <ul>
-                    <?php
-                    foreach ($breaking_news as $news) { ?>
-                        <li>
-                            <a href="<?php echo get_post_permalink($news["breaking_news_list"]->ID); ?>">
-                                <?php echo $news["breaking_news_list"]->post_title; ?>
-                            </a>
-                        </li>
-                    <?php
-                    }?>
-                </ul>
-            </div>
+    ob_start(); ?>
+    <!-- Breaking News Widget -->
+    <div class="breaking-news-area d-flex align-items-center">
+        <div class="news-title">
+            <p>Breaking News</p>
         </div>
+        <div id="breakingNewsTicker" class="ticker">
+            <ul>
+                <?php
+                foreach ($breaking_news as $news) { ?>
+                    <li>
+                        <a href="<?php echo get_post_permalink($news["breaking_news_list"]->ID); ?>">
+                            <?php echo $news["breaking_news_list"]->post_title; ?>
+                        </a>
+                    </li>
+                    <?php
+                }?>
+            </ul>
+        </div>
+    </div>
     <?php
     return ob_get_clean();
 }
@@ -239,25 +255,26 @@ function get_international_news () {
     if( empty($international_news) ) return;
 
     ob_start();?>
-        <!-- Breaking News Widget -->
-        <div class="breaking-news-area d-flex align-items-center mt-15">
-            <div class="news-title title2">
-                <p>International</p>
-            </div>
-            <div id="internationalTicker" class="ticker">
-                <ul>
-                    <?php
-                    foreach ($international_news as $news) { ?>
-                        <li>
-                            <a href="<?php echo get_post_permalink($news["international_news_list"]->ID); ?>">
-                                <?php echo $news["international_news_list"]->post_title; ?>
-                            </a>
-                        </li>
-                        <?php
-                    }?>
-                </ul>
-            </div>
+    <!-- Breaking News Widget -->
+    <div class="breaking-news-area d-flex align-items-center mt-15">
+        <div class="news-title title2">
+            <p>International</p>
         </div>
+        <div id="internationalTicker" class="ticker">
+            <ul>
+                <?php
+                foreach ($international_news as $news) { ?>
+                    <li>
+                        <a href="<?php echo get_post_permalink($news["international_news_list"]->ID); ?>">
+                            <?php echo $news["international_news_list"]->post_title; ?>
+                        </a>
+                    </li>
+                    <?php
+                }?>
+            </ul>
+        </div>
+    </div>
     <?php
     return ob_get_clean();
 }
+
