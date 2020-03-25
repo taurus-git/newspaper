@@ -168,7 +168,7 @@ if( function_exists('acf_add_local_field_group') ):
                 array(
                     'param' => 'block',
                     'operator' => '==',
-                    'value' => 'acf/testimonial',
+                    'value' => 'acf/latestNews',
                 ),
             ),
         ),
@@ -184,21 +184,40 @@ if( function_exists('acf_add_local_field_group') ):
 
 endif;
 
-add_action('acf/init', 'my_acf_blocks_init');
-function my_acf_blocks_init() {
+add_action('acf/init', 'newspaper_acf_blocks_init');
+function newspaper_acf_blocks_init() {
 
     // Check function exists.
     if( function_exists('acf_register_block_type') ) {
 
         // Register a testimonial block.
         acf_register_block_type(array(
-            'name'              => 'testimonial',
-            'title'             => __('Testimonial'),
-            'description'       => __('A custom testimonial block.'),
-            'render_template'   => 'template-parts/blocks/testimonial/testimonial.php',
+            'name'              => 'latestNews',
+            'title'             => __('Latest news'),
+            'description'       => __('A custom latest news block.'),
+            'render_template'   => 'template-parts/blocks/latest_news/latest_news.php',
             'category'          => 'formatting',
         ));
     }
+}
+
+function get_hero_area () {
+    $latest_news = get_latest_news ();
+    ob_start();?>
+     <div class="hero-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <?php echo $latest_news; ?>
+                <div class="col-12 col-lg-4">
+                    <div class="hero-add">
+                        <a href="#"><img src="img/bg-img/hero-add.gif" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+    <?php
+    return ob_get_clean();
 }
 
 function get_latest_news (){
