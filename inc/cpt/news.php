@@ -74,7 +74,7 @@ if( function_exists('acf_add_local_field_group') ):
 
     acf_add_local_field_group(array(
         'key' => 'group_5e776264706aa',
-        'title' => 'Latest news',
+        'title' => 'Hero area',
         'fields' => array(
             array(
                 'key' => 'field_5e77627df5378',
@@ -162,13 +162,32 @@ if( function_exists('acf_add_local_field_group') ):
                     ),
                 ),
             ),
+            array(
+                'key' => 'field_5e7c7338bb973',
+                'label' => 'Hero area banner field',
+                'name' => 'hero_area_banner_field',
+                'type' => 'file',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+                'library' => 'all',
+                'min_size' => '',
+                'max_size' => '',
+                'mime_types' => '',
+            ),
         ),
         'location' => array(
             array(
                 array(
                     'param' => 'block',
                     'operator' => '==',
-                    'value' => 'acf/latestNews',
+                    'value' => 'acf/heroarea',
                 ),
             ),
         ),
@@ -187,15 +206,13 @@ endif;
 add_action('acf/init', 'newspaper_acf_blocks_init');
 function newspaper_acf_blocks_init() {
 
-    // Check function exists.
     if( function_exists('acf_register_block_type') ) {
 
-        // Register a testimonial block.
         acf_register_block_type(array(
-            'name'              => 'latestNews',
-            'title'             => __('Latest news'),
-            'description'       => __('A custom latest news block.'),
-            'render_template'   => 'template-parts/blocks/latest_news/latest_news.php',
+            'name'              => 'heroarea',
+            'title'             => __('Hero area'),
+            'description'       => __('A custom Hero area block.'),
+            'render_template'   => 'template-parts/blocks/hero_area/hero_area.php',
             'category'          => 'formatting',
         ));
     }
@@ -203,19 +220,17 @@ function newspaper_acf_blocks_init() {
 
 function get_hero_area () {
     $latest_news = get_latest_news ();
+    $hero_area_banner = get_hero_area_banner ();
+
     ob_start();?>
-     <div class="hero-area">
+    <div class="hero-area">
         <div class="container">
             <div class="row align-items-center">
                 <?php echo $latest_news; ?>
-                <div class="col-12 col-lg-4">
-                    <div class="hero-add">
-                        <a href="#"><img src="img/bg-img/hero-add.gif" alt=""></a>
-                    </div>
-                </div>
+                <?php echo $hero_area_banner; ?>
             </div>
         </div>
-     </div>
+    </div>
     <?php
     return ob_get_clean();
 }
@@ -297,3 +312,19 @@ function get_international_news () {
     return ob_get_clean();
 }
 
+function get_hero_area_banner () {
+    $hero_area_banner = get_field('hero_area_banner_field');
+    if( empty($hero_area_banner) ) return;
+
+    ob_start();?>
+    <div class="col-12 col-lg-4">
+        <div class="hero-add">
+            <a href="#">
+                <img src="<?php echo $hero_area_banner['url'];?>"
+                     alt="<?php echo $hero_area_banner['alt'];?>">
+            </a>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
