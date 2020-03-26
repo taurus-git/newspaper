@@ -20,3 +20,9 @@ function add_theme_scripts() {
     wp_enqueue_script( 'active', get_template_directory_uri() .'/assets/js/active.js', array('jquery'), null, true );
 }
 
+add_action( 'after_setup_theme', function(){
+    register_nav_menus( array(
+        'main-menu' => __( 'Main Menu' ),
+        'footer-menu' => __( 'Footer Menu' ),
+    ) );
+} );
