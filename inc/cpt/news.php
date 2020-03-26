@@ -68,3 +68,263 @@ function newspaper_register_news_category() {
 }
 
 add_action( 'init', 'newspaper_register_news_category' );
+
+
+if( function_exists('acf_add_local_field_group') ):
+
+    acf_add_local_field_group(array(
+        'key' => 'group_5e776264706aa',
+        'title' => 'Hero area',
+        'fields' => array(
+            array(
+                'key' => 'field_5e77627df5378',
+                'label' => 'Breaking news',
+                'name' => 'breaking_news',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e7762b3f5379',
+                        'label' => 'Breaking news list',
+                        'name' => 'breaking_news_list',
+                        'type' => 'post_object',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => array(
+                            0 => 'news',
+                        ),
+                        'taxonomy' => '',
+                        'allow_null' => 0,
+                        'multiple' => 0,
+                        'return_format' => 'object',
+                        'ui' => 1,
+                    ),
+                ),
+            ),
+            array(
+                'key' => 'field_5e77631cf537a',
+                'label' => 'International news',
+                'name' => 'international_news',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e77633ff537b',
+                        'label' => 'International news list',
+                        'name' => 'international_news_list',
+                        'type' => 'post_object',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => array(
+                            0 => 'news',
+                        ),
+                        'taxonomy' => '',
+                        'allow_null' => 0,
+                        'multiple' => 0,
+                        'return_format' => 'object',
+                        'ui' => 1,
+                    ),
+                ),
+            ),
+            array(
+                'key' => 'field_5e7c7338bb973',
+                'label' => 'Hero area banner field',
+                'name' => 'hero_area_banner_field',
+                'type' => 'file',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+                'library' => 'all',
+                'min_size' => '',
+                'max_size' => '',
+                'mime_types' => '',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/heroarea',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
+endif;
+
+add_action('acf/init', 'newspaper_acf_blocks_init');
+function newspaper_acf_blocks_init() {
+
+    if( function_exists('acf_register_block_type') ) {
+
+        acf_register_block_type(array(
+            'name'              => 'heroarea',
+            'title'             => __('Hero area'),
+            'description'       => __('A custom Hero area block.'),
+            'render_template'   => 'template-parts/blocks/hero_area/hero_area.php',
+            'category'          => 'formatting',
+        ));
+    }
+}
+
+function get_hero_area () {
+    $latest_news = get_latest_news ();
+    $hero_area_banner = get_hero_area_banner ();
+
+    ob_start();?>
+    <div class="hero-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <?php echo $latest_news; ?>
+                <?php echo $hero_area_banner; ?>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+function get_latest_news (){
+    $breaking_news = get_breaking_news();
+    $international_news = get_international_news();
+
+    if (!$breaking_news && !$international_news) return;
+
+    ob_start();?>
+    <div class="col-12 col-lg-8">
+
+        <?php if($breaking_news): echo $breaking_news;?>
+        <?php endif;?>
+
+        <?php if($international_news): echo $international_news;?>
+        <?php endif;?>
+
+    </div>
+    <?php
+    return ob_get_clean();
+
+}
+
+function get_breaking_news () {
+    $breaking_news = get_field('breaking_news');
+    if (empty($breaking_news)) return;
+
+    ob_start(); ?>
+    <!-- Breaking News Widget -->
+    <div class="breaking-news-area d-flex align-items-center">
+        <div class="news-title">
+            <p>Breaking News</p>
+        </div>
+        <div id="breakingNewsTicker" class="ticker">
+            <ul>
+                <?php
+                foreach ($breaking_news as $news) { ?>
+                    <li>
+                        <a href="<?php echo get_post_permalink($news["breaking_news_list"]->ID); ?>">
+                            <?php echo $news["breaking_news_list"]->post_title; ?>
+                        </a>
+                    </li>
+                    <?php
+                }?>
+            </ul>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+function get_international_news () {
+    $international_news = get_field('international_news');
+    if( empty($international_news) ) return;
+
+    ob_start();?>
+    <!-- Breaking News Widget -->
+    <div class="breaking-news-area d-flex align-items-center mt-15">
+        <div class="news-title title2">
+            <p>International</p>
+        </div>
+        <div id="internationalTicker" class="ticker">
+            <ul>
+                <?php
+                foreach ($international_news as $news) { ?>
+                    <li>
+                        <a href="<?php echo get_post_permalink($news["international_news_list"]->ID); ?>">
+                            <?php echo $news["international_news_list"]->post_title; ?>
+                        </a>
+                    </li>
+                    <?php
+                }?>
+            </ul>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+function get_hero_area_banner () {
+    $hero_area_banner = get_field('hero_area_banner_field');
+    if( empty($hero_area_banner) ) return;
+
+    ob_start();?>
+    <div class="col-12 col-lg-4">
+        <div class="hero-add">
+            <a href="#">
+                <img src="<?php echo $hero_area_banner['url'];?>"
+                     alt="<?php echo $hero_area_banner['alt'];?>">
+            </a>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}

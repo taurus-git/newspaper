@@ -29,7 +29,7 @@
                             <!-- Logo -->
                             <div class="logo">
                                 <a href="<?php echo get_home_url(null, '/');?>">
-                                    //TODO: add alt value
+                                    <!--TODO: add alt value-->
                                     <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
                                 </a>
                             </div>
@@ -65,7 +65,7 @@
                         <!-- Logo -->
                         <div class="logo">
                             <a href="<?php echo get_home_url(null, '/');?>">
-                                //TODO: add alt value
+                                <!--TODO: add alt value-->
                                 <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
                             </a>
                         </div>
