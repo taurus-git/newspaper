@@ -328,3 +328,40 @@ function get_hero_area_banner () {
     <?php
     return ob_get_clean();
 }
+
+
+function get_news_by_term($term, $num_of_posts) {
+    if (!$term) return;
+
+    $args = array(
+        'post_type' => 'news',
+        'posts_per_page' => $num_of_posts,
+        'post_status' => 'publish',
+        'orderby' => 'date',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'news_category',
+                'field'    => 'slug',
+                'terms'    => array( $term ),
+            )
+        )
+    );
+
+    $news = get_posts($args);
+    return $news;
+}
+
+function show_latest_news_from_category($term, $num_of_posts) {
+    $news_by_term = get_news_by_term($term, $num_of_posts);
+
+    $output = '';
+
+    foreach ($news_by_term as $single_news) {
+        $link = get_the_permalink($single_news->ID);
+        $title = $single_news->post_title;
+
+        $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
+    }
+    if (!$output) return;
+    return '<ul>' . $output . '</ul>';
+}
