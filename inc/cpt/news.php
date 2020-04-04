@@ -357,7 +357,8 @@ function show_latest_news_from_category($term, $num_of_posts) {
 
     if ( count($news_by_term) >= 2 ) {
         $first_news = array_shift($news_by_term);
-        var_dump($first_news);
+        $first_news_id = $first_news->ID;
+        $fist_news_markup = get_news_markup($first_news_id);
 
         $output = '';
         foreach ($news_by_term as $single_news) {
@@ -370,4 +371,23 @@ function show_latest_news_from_category($term, $num_of_posts) {
         if (!$output) return;
         return '<ul>' . $output . '</ul>';
     }
+}
+
+function get_news_markup($id) {
+    $first_news_markup_params = get_first_news_markup_params($id);
+
+    var_dump($first_news_markup_params['class']);
+}
+
+function get_first_news_markup_params($id) {
+    $params = array(
+        'id' => $id,
+        'class' => 'single-blog-post featured-post',
+        'image_size' => '',
+        'show_taxonomy_mame' => true,
+        'show_author' => true,
+        'show_post_comments' => true,
+        'show_date' => false,
+    );
+    return $params;
 }
