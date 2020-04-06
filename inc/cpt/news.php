@@ -377,9 +377,6 @@ function show_latest_news_from_category($term, $num_of_posts) {
 function get_first_news_markup($id) {
     $markup_params = get_first_news_markup_params($id);
 
-
-
-    ob_start();
     $id = $markup_params['id'];
     $class = $markup_params['class'];
     $image_size = $markup_params['image_size'];
@@ -403,9 +400,11 @@ function get_first_news_markup($id) {
         $author_id = intval($post->post_author);
         $author_name = get_author_ful_name ($author_id);
     }
-    $description = get_the_excerpt();
+    $description = get_the_excerpt($id);
     $show_post_comments = $markup_params['show_post_comments'];
     $show_date = $markup_params['show_date'];
+
+    ob_start();
     ?>
     <!-- Single Featured Post -->
     <div class="col-12 col-lg-7">
@@ -424,7 +423,6 @@ function get_first_news_markup($id) {
                 </a>
                 <div class="post-meta">
                     <?php echo sprintf('<p class="post-author">%s<a href="#">%s</a></p>', 'By ', $author_name);?>
-                    <!--<p class="post-excerp"><?php /*new_excerpt_more();*/?></p>-->
                     <p class="post-excerp"><?php echo $description;?></p>
                     <!-- Post Like & Post Comment -->
                     <div class="d-flex align-items-center">
