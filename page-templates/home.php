@@ -6,7 +6,7 @@
 get_header();
 
 $first_news = get_first_news('finance', 3);
-$featured_post = get_featured_post_markup('finance', 3);
+$featured_post = get_featured_post('finance', 3);
 ?>
 <?php while (have_posts()): the_post();?>
     <?php the_content();?>

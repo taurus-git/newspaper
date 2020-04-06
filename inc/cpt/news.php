@@ -352,46 +352,6 @@ function get_news_by_term($term, $num_of_posts) {
     return $news;
 }
 
-function show_latest_news_from_category($term, $num_of_posts) {
-    $news_by_term = get_news_by_term($term, $num_of_posts);
-
-
-    //Todo. Render unique markup
-    $output = '';
-    foreach ($news_by_term as $single_news) {
-        $link = get_the_permalink($single_news->ID);
-        $title = $single_news->post_title;
-
-        $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
-    }
-
-    if (!$output) return;
-    return '<ul>' . $output . '</ul>';
-
-
-
-}
-
-/*function get_featured_post_block ($term, $num_of_posts) {
-    $news_by_term = get_news_by_term($term, $num_of_posts);
-
-    //Todo. If first news has unique markup
-    if ( count($news_by_term) >= 2 ) {
-        $first_news = array_shift($news_by_term);
-        $first_news_id = $first_news->ID;
-        $first_news_markup = get_first_news_markup($first_news_id);
-
-        $rest_news = get_featured_post_markup($news_by_term);
-
-        return $first_news_markup;
-
-    }
-
-
-}*/
-
-
-
 function get_first_news($term, $num_of_post) {
     $news_by_term = get_news_by_term($term, $num_of_post);
 
@@ -481,7 +441,7 @@ function get_first_news_markup_params($id) {
     return $params;
 }
 
-function get_featured_post_markup ($term, $num_of_post) {
+function get_featured_post ($term, $num_of_post) {
     $first_news = get_first_news('finance', 3);
 
     if ( !empty($first_news) ) {
@@ -494,6 +454,7 @@ function get_featured_post_markup ($term, $num_of_post) {
             foreach ($news_by_term as $single_news) {
                 $link = get_the_permalink($single_news->ID);
                 $title = $single_news->post_title;
+                $markup = get_featured_post_markup();
 
                 $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
             }
@@ -501,11 +462,13 @@ function get_featured_post_markup ($term, $num_of_post) {
 
         if (!$output) return;
         return '<ul>' . $output . '</ul>';
-
-       /* ob_start();*/?><!--
-
-        --><?php
-    /*    return ob_get_clean();*/
     }
+}
+
+function get_featured_post_markup() {
+    ob_start();?>
+
+    <?php
+    return ob_get_clean();
 }
 
