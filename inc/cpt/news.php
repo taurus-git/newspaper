@@ -355,22 +355,52 @@ function get_news_by_term($term, $num_of_posts) {
 function show_latest_news_from_category($term, $num_of_posts) {
     $news_by_term = get_news_by_term($term, $num_of_posts);
 
+
+    //Todo. Render unique markup
+    $output = '';
+    foreach ($news_by_term as $single_news) {
+        $link = get_the_permalink($single_news->ID);
+        $title = $single_news->post_title;
+
+        $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
+    }
+
+    if (!$output) return;
+    return '<ul>' . $output . '</ul>';
+
+
+
+}
+
+/*function get_featured_post_block ($term, $num_of_posts) {
+    $news_by_term = get_news_by_term($term, $num_of_posts);
+
+    //Todo. If first news has unique markup
     if ( count($news_by_term) >= 2 ) {
         $first_news = array_shift($news_by_term);
         $first_news_id = $first_news->ID;
-        $fist_news_markup = get_first_news_markup($first_news_id);
-        echo $fist_news_markup;
+        $first_news_markup = get_first_news_markup($first_news_id);
 
-        $output = '';
-        foreach ($news_by_term as $single_news) {
-            $link = get_the_permalink($single_news->ID);
-            $title = $single_news->post_title;
+        $rest_news = get_featured_post_markup($news_by_term);
 
-            $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
-        }
+        return $first_news_markup;
 
-        if (!$output) return;
-        return '<ul>' . $output . '</ul>';
+    }
+
+
+}*/
+
+
+
+function get_first_news($term, $num_of_post) {
+    $news_by_term = get_news_by_term($term, $num_of_post);
+
+    if ( count($news_by_term) >= 2 ) {
+        $first_news = array_slice($news_by_term, 0, 1);
+        $first_news_id = $first_news[0]->ID;
+        $first_news_markup = get_first_news_markup($first_news_id);
+
+        return $first_news_markup;
     }
 }
 
@@ -450,3 +480,32 @@ function get_first_news_markup_params($id) {
     );
     return $params;
 }
+
+function get_featured_post_markup ($term, $num_of_post) {
+    $first_news = get_first_news('finance', 3);
+
+    if ( !empty($first_news) ) {
+        $all_news_by_term = get_news_by_term($term, $num_of_post);
+        $news_by_term = array_slice($all_news_by_term, 1);
+
+        if ( count($news_by_term) >= 1 ) {
+            $output = '';
+
+            foreach ($news_by_term as $single_news) {
+                $link = get_the_permalink($single_news->ID);
+                $title = $single_news->post_title;
+
+                $output .= sprintf('<li><a href="%s">%s</a></li>', $link, $title);
+            }
+        }
+
+        if (!$output) return;
+        return '<ul>' . $output . '</ul>';
+
+       /* ob_start();*/?><!--
+
+        --><?php
+    /*    return ob_get_clean();*/
+    }
+}
+

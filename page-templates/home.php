@@ -5,12 +5,14 @@
 
 get_header();
 
-$featured_news = show_latest_news_from_category('finance', 3);
+$first_news = get_first_news('finance', 3);
+$featured_post = get_featured_post_markup('finance', 3);
 ?>
 <?php while (have_posts()): the_post();?>
     <?php the_content();?>
 
-    <?php echo $featured_news;?>
+    <?php echo $first_news;?>
+    <?php echo $featured_post;?>
 
 <?php endwhile; ?>
 
