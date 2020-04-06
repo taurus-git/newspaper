@@ -57,17 +57,17 @@ function new_excerpt_more( $more ){
     return '<a href="'. get_permalink($post) . '">Читать дальше...</a>';
 }
 
-function get_author_ful_name ($author_id) {
-    $fname = get_the_author_meta('first_name', $author_id);
-    $lname = get_the_author_meta('last_name', $author_id);
+function get_author_full_name ($author_id) {
+    $first_name = get_the_author_meta('first_name', $author_id);
+    $last_name = get_the_author_meta('last_name', $author_id);
     $full_name = '';
 
-    if( empty($fname)){
-        $full_name = $lname;
-    } elseif( empty( $lname )){
-        $full_name = $fname;
+    if( empty($first_name)){
+        $full_name = $last_name;
+    } elseif( empty( $last_name )){
+        $full_name = $first_name;
     } else {
-        $full_name = "{$fname} {$lname}";
+        $full_name = "{$first_name} {$last_name}";
     }
 
     return $full_name;

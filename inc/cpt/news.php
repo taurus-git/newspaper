@@ -398,7 +398,7 @@ function get_first_news_markup($id) {
     if ($show_author) {
         $post = get_post($id);
         $author_id = intval($post->post_author);
-        $author_name = get_author_ful_name ($author_id);
+        $author_name = get_author_full_name ($author_id);
     }
     $description = get_the_excerpt($id);
     $show_post_comments = $markup_params['show_post_comments'];
