@@ -34,10 +34,41 @@ if ( function_exists( 'add_theme_support' ) ) {
 }
 
 if ( function_exists( 'add_image_size' ) ) {
+    add_image_size( 'single_featured_big', 530, 420, true ); // Кадрирование изображения
     add_image_size( 'single_featured_post', 420, 333, true ); // Кадрирование изображения
     add_image_size( 'single_featured_post_2', 287, 199, true ); // Кадрирование изображения
     add_image_size( 'small_featured_post', 90, 90, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post', 350, 307, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post_vertical', 255, 312, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post_sidebar', 255, 101, true ); // Кадрирование изображения
+}
+
+function get_post_author_name($post) {
+    //if (!is_a($post, 'WP_Post')) return;
+    $author_id = $post->post_author;
+    var_dump($post);
+    $name = get_the_author_meta('display_name', $author_id);
+    return $name;
+}
+
+add_filter( 'excerpt_more', 'new_excerpt_more' );
+function new_excerpt_more( $more ){
+    global $post;
+    return '<a href="'. get_permalink($post) . '">Читать дальше...</a>';
+}
+
+function get_author_ful_name ($author_id) {
+    $fname = get_the_author_meta('first_name', $author_id);
+    $lname = get_the_author_meta('last_name', $author_id);
+    $full_name = '';
+
+    if( empty($fname)){
+        $full_name = $lname;
+    } elseif( empty( $lname )){
+        $full_name = $fname;
+    } else {
+        $full_name = "{$fname} {$lname}";
+    }
+
+    return $full_name;
 }

@@ -358,7 +358,8 @@ function show_latest_news_from_category($term, $num_of_posts) {
     if ( count($news_by_term) >= 2 ) {
         $first_news = array_shift($news_by_term);
         $first_news_id = $first_news->ID;
-        $fist_news_markup = get_news_markup($first_news_id);
+        $fist_news_markup = get_first_news_markup($first_news_id);
+        echo $fist_news_markup;
 
         $output = '';
         foreach ($news_by_term as $single_news) {
@@ -373,17 +374,76 @@ function show_latest_news_from_category($term, $num_of_posts) {
     }
 }
 
-function get_news_markup($id) {
-    $first_news_markup_params = get_first_news_markup_params($id);
+function get_first_news_markup($id) {
+    $markup_params = get_first_news_markup_params($id);
 
-    var_dump($first_news_markup_params['class']);
+
+
+    ob_start();
+    $id = $markup_params['id'];
+    $class = $markup_params['class'];
+    $image_size = $markup_params['image_size'];
+    $thumb = get_the_post_thumbnail( $id, $image_size );
+    $permalink = get_post_permalink( $id );
+    $show_taxonomy_name = $markup_params['show_taxonomy_mame'];
+    if ($show_taxonomy_name){
+        $taxonomy = get_the_terms( $id, 'news_category' );
+
+        if( $taxonomy ){
+            $term = array_shift( $taxonomy );
+            $term_name = $term->name;
+            $term_id = $term->term_id;
+            $term_link = get_term_link($term_id);
+        }
+    }
+    $title = esc_html( get_the_title($id) );
+    $show_author = $markup_params['show_author'];
+    if ($show_author) {
+        $post = get_post($id);
+        $author_id = intval($post->post_author);
+        $author_name = get_author_ful_name ($author_id);
+    }
+    $description = get_the_excerpt();
+    $show_post_comments = $markup_params['show_post_comments'];
+    $show_date = $markup_params['show_date'];
+    ?>
+    <!-- Single Featured Post -->
+    <div class="col-12 col-lg-7">
+        <div class="<?php echo $class; ?>">
+            <div class="post-thumb">
+                <a href="<?php echo $permalink; ?>">
+                    <?php echo $thumb; ?>
+                </a>
+            </div>
+            <div class="post-data">
+                <a href="<?php echo $term_link; ?>" class="post-catagory">
+                    <?php echo $term_name; ?>
+                </a>
+                <a href="<?php echo $permalink; ?>" class="post-title">
+                    <h6><?php echo $title; ?></h6>
+                </a>
+                <div class="post-meta">
+                    <?php echo sprintf('<p class="post-author">%s<a href="#">%s</a></p>', 'By ', $author_name);?>
+                    <!--<p class="post-excerp"><?php /*new_excerpt_more();*/?></p>-->
+                    <p class="post-excerp"><?php echo $description;?></p>
+                    <!-- Post Like & Post Comment -->
+                    <div class="d-flex align-items-center">
+                        <a href="#" class="post-like"><img src="img/core-img/like.png" alt=""> <span>392</span></a>
+                        <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
 }
 
 function get_first_news_markup_params($id) {
     $params = array(
         'id' => $id,
         'class' => 'single-blog-post featured-post',
-        'image_size' => '',
+        'image_size' => 'single_featured_post',
         'show_taxonomy_mame' => true,
         'show_author' => true,
         'show_post_comments' => true,
