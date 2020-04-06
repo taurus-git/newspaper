@@ -386,7 +386,7 @@ function get_first_news_markup($id) {
     if ($show_taxonomy_name){
         $taxonomy = get_the_terms( $id, 'news_category' );
 
-        if( $taxonomy ){
+        if( !empty($taxonomy) ){
             $term = array_shift( $taxonomy );
             $term_name = $term->name;
             $term_id = $term->term_id;
@@ -396,8 +396,7 @@ function get_first_news_markup($id) {
     $title = esc_html( get_the_title($id) );
     $show_author = $markup_params['show_author'];
     if ($show_author) {
-        $post = get_post($id);
-        $author_id = intval($post->post_author);
+        $author_id = get_author_id ($id);
         $author_name = get_author_full_name ($author_id);
     }
     $description = get_the_excerpt($id);
@@ -425,10 +424,12 @@ function get_first_news_markup($id) {
                     <?php echo sprintf('<p class="post-author">%s<a href="#">%s</a></p>', 'By ', $author_name);?>
                     <p class="post-excerp"><?php echo $description;?></p>
                     <!-- Post Like & Post Comment -->
-                    <div class="d-flex align-items-center">
-                        <a href="#" class="post-like"><img src="img/core-img/like.png" alt=""> <span>392</span></a>
-                        <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
+                    <?php if($show_post_comments): ?>
+                        <div class="d-flex align-items-center">
+                            <a href="#" class="post-like"><img src="img/core-img/like.png" alt=""> <span>392</span></a>
+                            <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

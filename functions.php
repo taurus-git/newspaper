@@ -43,18 +43,17 @@ if ( function_exists( 'add_image_size' ) ) {
     add_image_size( 'single_blog_post_sidebar', 255, 101, true ); // Кадрирование изображения
 }
 
-function get_post_author_name($post) {
-    //if (!is_a($post, 'WP_Post')) return;
-    $author_id = $post->post_author;
-    var_dump($post);
-    $name = get_the_author_meta('display_name', $author_id);
-    return $name;
-}
-
 add_filter( 'excerpt_more', 'new_excerpt_more' );
 function new_excerpt_more( $more ){
     global $post;
     return '<a href="'. get_permalink($post) . '">Читать дальше...</a>';
+}
+
+function get_author_id ($post_id) {
+    $post = get_post($post_id);
+    $author_id = intval($post->post_author);
+
+    return $author_id;
 }
 
 function get_author_full_name ($author_id) {
