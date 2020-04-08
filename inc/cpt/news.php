@@ -201,6 +201,52 @@ if( function_exists('acf_add_local_field_group') ):
         'description' => '',
     ));
 
+    acf_add_local_field_group(array(
+        'key' => 'group_5e8d9bfe80ce6',
+        'title' => 'News category',
+        'fields' => array(
+            array(
+                'key' => 'field_5e8d9cb6deee6',
+                'label' => 'Category',
+                'name' => 'news_taxonomy',
+                'type' => 'taxonomy',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'taxonomy' => 'news_category',
+                'field_type' => 'select',
+                'allow_null' => 1,
+                'add_term' => 1,
+                'save_terms' => 0,
+                'load_terms' => 0,
+                'return_format' => 'object',
+                'multiple' => 0,
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/featuredposts',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -215,6 +261,16 @@ function newspaper_acf_blocks_init() {
             'render_template'   => 'template-parts/blocks/hero_area/hero_area.php',
             'category'          => 'formatting',
         ));
+
+        acf_register_block_type(array(
+            'name'              => 'featuredposts',
+            'title'             => __('Featured posts area'),
+            'description'       => __('A custom Featured posts block.'),
+            'render_template'   => 'template-parts/blocks/featured_posts/featured_posts.php',
+            'category'          => 'formatting',
+        ));
+
+
     }
 }
 
@@ -330,30 +386,8 @@ function get_hero_area_banner () {
 }
 
 
-
-function get_news_by_term($term, $num_of_posts) {
-    if (!$term) return;
-
-    $args = array(
-        'post_type' => 'news',
-        'posts_per_page' => $num_of_posts,
-        'post_status' => 'publish',
-        'orderby' => 'date',
-        'tax_query' => array(
-            array(
-                'taxonomy' => 'news_category',
-                'field'    => 'slug',
-                'terms'    => array( $term ),
-            )
-        )
-    );
-
-    $news = get_posts($args);
-    return $news;
-}
-
-function get_first_news($term, $num_of_post) {
-    $news_by_term = get_news_by_term($term, $num_of_post);
+function get_first_news($term_slug, $num_of_post) {
+    $news_by_term = get_news_by_term($term_slug, $num_of_post);
 
     if ( count($news_by_term) >= 1 ) {
         $first_news = array_slice($news_by_term, 0, 1);
@@ -438,11 +472,12 @@ function get_first_news_markup_params($id) {
     return $params;
 }
 
-function get_featured_posts ($term, $num_of_post) {
-    $first_news = get_first_news('finance', 3);
+
+function get_featured_posts ($term_slug, $num_of_post) {
+    $first_news = get_first_news($term_slug, 3);
 
     if ( !empty($first_news) ) {
-        $all_news_by_term = get_news_by_term($term, $num_of_post);
+        $all_news_by_term = get_news_by_term($term_slug, $num_of_post);
         $news_by_term = array_slice($all_news_by_term, 1);
 
         if ( count($news_by_term) >= 1 ) {
@@ -451,7 +486,7 @@ function get_featured_posts ($term, $num_of_post) {
             foreach ($news_by_term as $single_news) {
                 $id = $single_news->ID;
                 $markup_params = get_featured_posts_markup_params($id);
-                $markup = get_posts_markup($id, $markup_params);
+                $markup = get_news_markup($id, $markup_params);
                 $output .= $markup;
             }
         }
@@ -461,7 +496,7 @@ function get_featured_posts ($term, $num_of_post) {
     }
 }
 
-function get_posts_markup($id, $markup_params) {
+function get_news_markup($id, $markup_params) {
     $class = $markup_params['class'];
     $image_size = $markup_params['image_size'];
     $thumb = get_the_post_thumbnail( $id, $image_size );
@@ -521,7 +556,6 @@ function get_posts_markup($id, $markup_params) {
     return ob_get_clean();
 }
 
-
 function get_featured_posts_markup_params($id) {
     $params = array(
         'class' => 'single-blog-post featured-post-2',
@@ -534,3 +568,24 @@ function get_featured_posts_markup_params($id) {
     return $params;
 }
 
+
+function get_news_by_term($term_slug, $num_of_posts) {
+    if (!$term_slug) return;
+
+    $args = array(
+        'post_type' => 'news',
+        'posts_per_page' => $num_of_posts,
+        'post_status' => 'publish',
+        'orderby' => 'date',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'news_category',
+                'field'    => 'slug',
+                'terms'    => array( $term_slug ),
+            )
+        )
+    );
+
+    $news = get_posts($args);
+    return $news;
+}
