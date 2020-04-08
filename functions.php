@@ -34,10 +34,49 @@ if ( function_exists( 'add_theme_support' ) ) {
 }
 
 if ( function_exists( 'add_image_size' ) ) {
+    add_image_size( 'single_featured_big', 530, 420, true ); // Кадрирование изображения
     add_image_size( 'single_featured_post', 420, 333, true ); // Кадрирование изображения
     add_image_size( 'single_featured_post_2', 287, 199, true ); // Кадрирование изображения
     add_image_size( 'small_featured_post', 90, 90, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post', 350, 307, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post_vertical', 255, 312, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post_sidebar', 255, 101, true ); // Кадрирование изображения
+}
+
+function excerpt($limit, $id) {
+    $excerpt = explode(' ', get_the_excerpt($id), $limit);
+
+    if (count($excerpt) >= $limit) {
+        array_pop($excerpt);
+        $excerpt = implode(" ", $excerpt) . '...';
+    } else {
+        $excerpt = implode(" ", $excerpt);
+    }
+
+    $excerpt = preg_replace('`\[[^\]]*\]`', '', $excerpt);
+
+    return $excerpt;
+}
+
+function get_author_id ($post_id) {
+    $post = get_post($post_id);
+    $author_id = intval($post->post_author);
+
+    return $author_id;
+}
+
+function get_author_full_name ($author_id) {
+    $first_name = get_the_author_meta('first_name', $author_id);
+    $last_name = get_the_author_meta('last_name', $author_id);
+    $full_name = '';
+
+    if( empty($first_name)){
+        $full_name = $last_name;
+    } elseif( empty( $last_name )){
+        $full_name = $first_name;
+    } else {
+        $full_name = "{$first_name} {$last_name}";
+    }
+
+    return $full_name;
 }
