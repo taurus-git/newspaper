@@ -87,7 +87,6 @@ function get_time () {
 }
 
 function get_date ($date_format) {
-    //$default_date_format = get_default_date_format();
     $date = get_the_date($date_format);
     return $date;
 }
@@ -95,4 +94,15 @@ function get_date ($date_format) {
 function get_default_date_format() {
     $date_format = 'F j, Y';
     return $date_format;
+}
+
+function get_taxonomy_name ($term) {
+    $name = $term->name;
+    return $name;
+}
+
+function get_taxonomy_link ($term) {
+    $term_id = $term->term_id;
+    $link = get_term_link($term_id);
+    return $link;
 }

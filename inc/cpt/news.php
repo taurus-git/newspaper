@@ -302,9 +302,9 @@ if( function_exists('acf_add_local_field_group') ):
         'location' => array(
             array(
                 array(
-                    'param' => 'post_type',
+                    'param' => 'block',
                     'operator' => '==',
-                    'value' => 'page',
+                    'value' => 'acf/featuredposts',
                 ),
             ),
         ),
@@ -478,15 +478,14 @@ function get_first_news_markup($id, $markup_params) {
     $image_size = $markup_params['image_size'];
     $thumb = get_the_post_thumbnail( $id, $image_size );
     $permalink = get_post_permalink( $id );
-    $show_taxonomy_name = $markup_params['show_taxonomy_mame'];
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
     if ($show_taxonomy_name){
         $taxonomy = get_the_terms( $id, 'news_category' );
 
         if( !empty($taxonomy) ){
             $term = array_shift( $taxonomy );
-            $term_name = $term->name;
-            $term_id = $term->term_id;
-            $term_link = get_term_link($term_id);
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
         }
     }
     $title = esc_html( get_the_title($id) );
@@ -538,14 +537,13 @@ function get_first_news_markup_params($id) {
     $params = array(
         'class' => 'single-blog-post featured-post',
         'image_size' => 'single_featured_post',
-        'show_taxonomy_mame' => true,
+        'show_taxonomy_name' => true,
         'show_author' => true,
         'show_post_comments' => true,
         'show_date' => false,
     );
     return $params;
 }
-
 
 function get_featured_posts ($term_slug, $num_of_post) {
     $first_news = get_first_news($term_slug, 3);
@@ -575,15 +573,14 @@ function get_news_markup($id, $markup_params) {
     $image_size = $markup_params['image_size'];
     $thumb = get_the_post_thumbnail( $id, $image_size );
     $permalink = get_post_permalink( $id );
-    $show_taxonomy_name = $markup_params['show_taxonomy_mame'];
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
     if ($show_taxonomy_name){
         $taxonomy = get_the_terms( $id, 'news_category' );
 
         if( !empty($taxonomy) ){
             $term = array_shift( $taxonomy );
-            $term_name = $term->name;
-            $term_id = $term->term_id;
-            $term_link = get_term_link($term_id);
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
         }
     }
     $title = esc_html( get_the_title($id) );
@@ -634,7 +631,7 @@ function get_featured_posts_markup_params($id) {
     $params = array(
         'class' => 'single-blog-post featured-post-2',
         'image_size' => 'single_featured_post_2',
-        'show_taxonomy_mame' => true,
+        'show_taxonomy_name' => true,
         'show_author' => false,
         'show_post_comments' => true,
         'show_date' => false,
@@ -665,12 +662,14 @@ function get_news_by_term($term_slug, $num_of_posts) {
 }
 
 
-function get_small_single_post ($id) {
-    $news_list = get_field('news_list', $id);
-
+function get_small_single_post () {
+    $news_list = get_field('news_list');
     $output = '';
     foreach ($news_list as $news) {
-        $markup = get_small_single_post_markup ($news);
+        $single_news = $news["single_news"][0];
+        $id = $single_news->ID;
+        $markup_params = get_small_single_post_markup_params($id);
+        $markup = get_small_single_post_markup ($news, $markup_params);
         $output .= $markup;
     }
 
@@ -678,28 +677,30 @@ function get_small_single_post ($id) {
     return '<div class="col-12 col-md-6 col-lg-4">' . $output . '</div>';
 }
 
-function get_small_single_post_markup ($news) {
-    ob_start();?>
-    <?php
+function get_small_single_post_markup ($news, $markup_params) {
     $single_news = $news["single_news"][0];
+
     $id = $single_news->ID;
     $link = get_post_permalink($id);
     $title = $single_news->post_title;
-    $thumb = get_the_post_thumbnail( $id, 'small_featured_post' );
-    $taxonomy = get_the_terms( $id, 'news_category' );
+    $image_size = $markup_params['image_size'];
+    $thumb = get_the_post_thumbnail( $id, $image_size );
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
+    if ($show_taxonomy_name) {
+        $taxonomy = get_the_terms( $id, 'news_category' );
 
-    if( !empty($taxonomy) ){
-        $term = array_shift( $taxonomy );
-        $term_name = $term->name;
-        $term_id = $term->term_id;
-        $term_link = get_term_link($term_id);
-    }
-
+        if( !empty($taxonomy) ){
+            $term = array_shift( $taxonomy );
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
+        }    
+    }   
+    $show_date = $markup_params['show_date'];
     $time = get_time();
-
     $date_format = 'F j';
     $date = get_date($date_format);
-    ?>
+
+    ob_start();?>
     <!-- Single Featured Post -->
         <div class="single-blog-post small-featured-post d-flex">
             <div class="post-thumb">
@@ -713,7 +714,9 @@ function get_small_single_post_markup ($news) {
                     <a href="<?php echo $link; ?>" class="post-title">
                         <h6><?php echo $title; ?></h6>
                     </a>
-                    <p class="post-date"><span><?php echo $time; ?></span> | <span><?php echo $date; ?></span>
+                    <?php if($show_date): ?>
+                        <p class="post-date"><span><?php echo $time; ?></span> | <span><?php echo $date; ?></span>
+                    <?php endif;?>
                 </div>
             </div>
         </div>
@@ -722,27 +725,14 @@ function get_small_single_post_markup ($news) {
     return ob_get_clean();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function get_small_single_post_markup_params($id) {
+    $params = array(
+        'image_size' => 'small_featured_post',
+        'show_taxonomy_name' => true,
+        'show_date' => true,
+    );
+    return $params;
+}
 /*End Featured Post Area*/
 
 

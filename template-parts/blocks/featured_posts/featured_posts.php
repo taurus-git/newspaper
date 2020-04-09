@@ -1,12 +1,9 @@
 <?php
-global $post;
-$id = $post->ID;
-
 $term = get_field('news_taxonomy');
 $term_slug = $term->slug;
 $first_news = get_first_news($term_slug, 1);
 $featured_post = get_featured_posts($term_slug, 3);
-$small_single_post = get_small_single_post ($id);
+$small_single_post = get_small_single_post ();
 
 ?>
 <!-- ##### Featured Post Area Start ##### -->
