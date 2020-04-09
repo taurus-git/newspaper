@@ -247,6 +247,78 @@ if( function_exists('acf_add_local_field_group') ):
         'description' => '',
     ));
 
+    acf_add_local_field_group(array(
+        'key' => 'group_5e8dcdf68692d',
+        'title' => 'News list',
+        'fields' => array(
+            array(
+                'key' => 'field_5e8dce4776796',
+                'label' => 'News list',
+                'name' => 'news_list',
+                'type' => 'repeater',
+                'instructions' => 'Choose News category and news',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e8dd0fab9355',
+                        'label' => 'Single news',
+                        'name' => 'single_news',
+                        'type' => 'relationship',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => array(
+                            0 => 'news',
+                        ),
+                        'taxonomy' => '',
+                        'filters' => array(
+                            0 => 'search',
+                            1 => 'taxonomy',
+                        ),
+                        'elements' => '',
+                        'min' => 1,
+                        'max' => 1,
+                        'return_format' => 'object',
+                    ),
+                ),
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/featuredposts',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
+
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -269,11 +341,9 @@ function newspaper_acf_blocks_init() {
             'render_template'   => 'template-parts/blocks/featured_posts/featured_posts.php',
             'category'          => 'formatting',
         ));
-
-
     }
 }
-
+/*Start Hero Area*/
 function get_hero_area () {
     $latest_news = get_latest_news ();
     $hero_area_banner = get_hero_area_banner ();
@@ -325,10 +395,13 @@ function get_breaking_news () {
         <div id="breakingNewsTicker" class="ticker">
             <ul>
                 <?php
-                foreach ($breaking_news as $news) { ?>
+                foreach ($breaking_news as $news) {
+                    $link = get_post_permalink($news["breaking_news_list"]->ID);
+                    $title = $news["breaking_news_list"]->post_title;
+                    ?>
                     <li>
-                        <a href="<?php echo get_post_permalink($news["breaking_news_list"]->ID); ?>">
-                            <?php echo $news["breaking_news_list"]->post_title; ?>
+                        <a href="<?php echo $link; ?>">
+                            <?php echo $title; ?>
                         </a>
                     </li>
                     <?php
@@ -384,8 +457,9 @@ function get_hero_area_banner () {
     <?php
     return ob_get_clean();
 }
+/*End Hero Area*/
 
-
+/*Start Featured Post Area*/
 function get_first_news($term_slug, $num_of_post) {
     $news_by_term = get_news_by_term($term_slug, $num_of_post);
 
@@ -404,15 +478,14 @@ function get_first_news_markup($id, $markup_params) {
     $image_size = $markup_params['image_size'];
     $thumb = get_the_post_thumbnail( $id, $image_size );
     $permalink = get_post_permalink( $id );
-    $show_taxonomy_name = $markup_params['show_taxonomy_mame'];
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
     if ($show_taxonomy_name){
         $taxonomy = get_the_terms( $id, 'news_category' );
 
         if( !empty($taxonomy) ){
             $term = array_shift( $taxonomy );
-            $term_name = $term->name;
-            $term_id = $term->term_id;
-            $term_link = get_term_link($term_id);
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
         }
     }
     $title = esc_html( get_the_title($id) );
@@ -464,14 +537,13 @@ function get_first_news_markup_params($id) {
     $params = array(
         'class' => 'single-blog-post featured-post',
         'image_size' => 'single_featured_post',
-        'show_taxonomy_mame' => true,
+        'show_taxonomy_name' => true,
         'show_author' => true,
         'show_post_comments' => true,
         'show_date' => false,
     );
     return $params;
 }
-
 
 function get_featured_posts ($term_slug, $num_of_post) {
     $first_news = get_first_news($term_slug, 3);
@@ -501,15 +573,14 @@ function get_news_markup($id, $markup_params) {
     $image_size = $markup_params['image_size'];
     $thumb = get_the_post_thumbnail( $id, $image_size );
     $permalink = get_post_permalink( $id );
-    $show_taxonomy_name = $markup_params['show_taxonomy_mame'];
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
     if ($show_taxonomy_name){
         $taxonomy = get_the_terms( $id, 'news_category' );
 
         if( !empty($taxonomy) ){
             $term = array_shift( $taxonomy );
-            $term_name = $term->name;
-            $term_id = $term->term_id;
-            $term_link = get_term_link($term_id);
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
         }
     }
     $title = esc_html( get_the_title($id) );
@@ -560,7 +631,7 @@ function get_featured_posts_markup_params($id) {
     $params = array(
         'class' => 'single-blog-post featured-post-2',
         'image_size' => 'single_featured_post_2',
-        'show_taxonomy_mame' => true,
+        'show_taxonomy_name' => true,
         'show_author' => false,
         'show_post_comments' => true,
         'show_date' => false,
@@ -589,3 +660,80 @@ function get_news_by_term($term_slug, $num_of_posts) {
     $news = get_posts($args);
     return $news;
 }
+
+
+function get_small_single_post () {
+    $news_list = get_field('news_list');
+    $output = '';
+    foreach ($news_list as $news) {
+        $single_news = $news["single_news"][0];
+        $id = $single_news->ID;
+        $markup_params = get_small_single_post_markup_params($id);
+        $markup = get_small_single_post_markup ($news, $markup_params);
+        $output .= $markup;
+    }
+
+    if (!$output) return;
+    return '<div class="col-12 col-md-6 col-lg-4">' . $output . '</div>';
+}
+
+function get_small_single_post_markup ($news, $markup_params) {
+    $single_news = $news["single_news"][0];
+
+    $id = $single_news->ID;
+    $link = get_post_permalink($id);
+    $title = $single_news->post_title;
+    $image_size = $markup_params['image_size'];
+    $thumb = get_the_post_thumbnail( $id, $image_size );
+    $show_taxonomy_name = $markup_params['show_taxonomy_name'];
+    if ($show_taxonomy_name) {
+        $taxonomy = get_the_terms( $id, 'news_category' );
+
+        if( !empty($taxonomy) ){
+            $term = array_shift( $taxonomy );
+            $term_name = get_taxonomy_name ($term);
+            $term_link = get_taxonomy_link ($term);
+        }    
+    }   
+    $show_date = $markup_params['show_date'];
+    $time = get_time();
+    $date_format = 'F j';
+    $date = get_date($date_format);
+
+    ob_start();?>
+    <!-- Single Featured Post -->
+        <div class="single-blog-post small-featured-post d-flex">
+            <div class="post-thumb">
+                <a href="<?php echo $link; ?>">
+                    <?php echo $thumb; ?>
+                </a>
+            </div>
+            <div class="post-data">
+                <a href="<?php echo $term_link; ?>" class="post-catagory"><?php echo $term_name; ?></a>
+                <div class="post-meta">
+                    <a href="<?php echo $link; ?>" class="post-title">
+                        <h6><?php echo $title; ?></h6>
+                    </a>
+                    <?php if($show_date): ?>
+                        <p class="post-date"><span><?php echo $time; ?></span> | <span><?php echo $date; ?></span>
+                    <?php endif;?>
+                </div>
+            </div>
+        </div>
+
+    <?php
+    return ob_get_clean();
+}
+
+function get_small_single_post_markup_params($id) {
+    $params = array(
+        'image_size' => 'small_featured_post',
+        'show_taxonomy_name' => true,
+        'show_date' => true,
+    );
+    return $params;
+}
+/*End Featured Post Area*/
+
+
+
