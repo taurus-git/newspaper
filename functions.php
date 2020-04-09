@@ -27,7 +27,6 @@ add_action( 'after_setup_theme', function(){
     ) );
 } );
 
-
 if ( function_exists( 'add_theme_support' ) ) {
     add_theme_support( 'post-thumbnails' );
     set_post_thumbnail_size( 150, 150 );
@@ -79,4 +78,21 @@ function get_author_full_name ($author_id) {
     }
 
     return $full_name;
+}
+
+function get_time () {
+    $time_format = 'g:i A';
+    $time = get_the_date($time_format);
+    return $time;
+}
+
+function get_date ($date_format) {
+    //$default_date_format = get_default_date_format();
+    $date = get_the_date($date_format);
+    return $date;
+}
+
+function get_default_date_format() {
+    $date_format = 'F j, Y';
+    return $date_format;
 }
