@@ -107,6 +107,28 @@ function get_taxonomy_link ($term) {
     return $link;
 }
 
+function get_most_viewed_posts_categories_ids ($most_viewed_posts_ids) {
+    foreach ($most_viewed_posts_ids as $post_id) {
+        $categories_ids[] = get_news_category_id($post_id);
+    }
+    return $categories_ids;
+}
+
+function get_news_category_id ($post_id) {
+    $category = get_the_terms( $post_id, 'news_category' );
+    $category_id = $category[0]->term_id;
+    return $category_id;
+}
+
+function get_most_viewed_posts_ids () {
+    $most_viewed_posts = newspaper_get_most_viewed("num=10 &echo=0 &return=array");
+    foreach ($most_viewed_posts as $post) {
+        $post_id = $post->ID;
+        $most_viewed_posts_ids[] =$post_id;
+    }
+    return $most_viewed_posts_ids;
+}
+
 /* Page view counter  */
 add_action('wp_head', 'newspaper_postviews');
 function newspaper_postviews() {
@@ -231,20 +253,16 @@ parse_str( $args, $i );
     else
         return $out;
 }
-/**
- * 1.2 - параметр return + небольшой рефакторинг
- * 1.1 - в num можно указывать offset
- */
 
-function get_news_category_id ($post_id) {
-    $category = get_the_terms( $post_id, 'news_category' );
-    $category_id = $category[0]->term_id;
+function get_news_from_category_id ($news_from_category) {
+    $category_id = $news_from_category->term_id;
     return $category_id;
 }
 
-
-
-
+function get_popular_news_from_category () {
+    $news_from_category = get_field('popular_news_area');
+    return $news_from_category;
+}
 
 function get_news_category_posts($category, $num_of_posts = -1) {
     if (!is_a($category, 'WP_Term')) return array();
