@@ -3,7 +3,7 @@ $term = get_field('news_taxonomy');
 $term_slug = $term->slug;
 $first_news = get_first_news($term_slug, 1);
 $featured_post = get_featured_posts($term_slug, 3);
-$small_single_post = get_small_single_post ();
+$small_single_posts = get_small_single_post ();
 
 ?>
 <!-- ##### Featured Post Area Start ##### -->
@@ -16,8 +16,7 @@ $small_single_post = get_small_single_post ();
                         <?php echo $featured_post;?>
                     </div>
                 </div>
-
-                <?php echo $small_single_post; ?>
+                <?php echo $small_single_posts; ?>
             </div>
         </div>
     </div>

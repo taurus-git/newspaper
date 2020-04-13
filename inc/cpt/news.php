@@ -318,6 +318,52 @@ if( function_exists('acf_add_local_field_group') ):
         'description' => '',
     ));
 
+    acf_add_local_field_group(array(
+        'key' => 'group_5e94320a60f63',
+        'title' => 'Popular news',
+        'fields' => array(
+            array(
+                'key' => 'field_5e94321f727a1',
+                'label' => 'Popular news area',
+                'name' => 'popular_news_area',
+                'type' => 'taxonomy',
+                'instructions' => 'Choose Category for showing popular news from it',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'taxonomy' => 'news_category',
+                'field_type' => 'select',
+                'allow_null' => 1,
+                'add_term' => 1,
+                'save_terms' => 0,
+                'load_terms' => 0,
+                'return_format' => 'object',
+                'multiple' => 0,
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/popularnews',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
 
 endif;
 
@@ -341,6 +387,15 @@ function newspaper_acf_blocks_init() {
             'render_template'   => 'template-parts/blocks/featured_posts/featured_posts.php',
             'category'          => 'formatting',
         ));
+
+        acf_register_block_type(array(
+            'name'              => 'popularnews',
+            'title'             => __('Popular news area'),
+            'description'       => __('A custom Popular News block.'),
+            'render_template'   => 'template-parts/blocks/popular_news/popular_news.php',
+            'category'          => 'formatting',
+        ));
+
     }
 }
 /*Start Hero Area*/
@@ -735,5 +790,39 @@ function get_small_single_post_markup_params($id) {
 }
 /*End Featured Post Area*/
 
+/*Popular News area start*/
+function get_popular_news ( ) {
+    $popular_news_from_category = get_popular_news_from_category ();
+    $popular_news_category_id = get_news_from_category_id ($popular_news_from_category);
 
+    $most_viewed_posts_ids = get_most_viewed_posts_ids ();
+    $most_viewed_posts_categories_ids = get_most_viewed_posts_categories_ids ($most_viewed_posts_ids);
 
+    $markup_params = get_popular_news_markup_params();
+
+    if ( in_array($popular_news_category_id, $most_viewed_posts_categories_ids) ) {
+
+        $output = '';
+
+        foreach ($most_viewed_posts_ids as $post_id) {
+            $markup = get_news_markup($post_id, $markup_params);
+            $output .= '<div class="col-12 col-md-6">' . $markup  . '</div>';
+        }
+
+    }
+    if (!$output) return;
+    return $output;
+}
+
+function get_popular_news_markup_params() {
+    $params = array(
+        'class' => 'single-blog-post style-3',
+        'image_size' => 'single_blog_post',
+        'show_taxonomy_name' => true,
+        'show_author' => false,
+        'show_post_comments' => true,
+        'show_date' => false,
+    );
+    return $params;
+}
+/*Popular News area end*/

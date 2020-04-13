@@ -106,3 +106,179 @@ function get_taxonomy_link ($term) {
     $link = get_term_link($term_id);
     return $link;
 }
+
+function get_most_viewed_posts_categories_ids ($most_viewed_posts_ids) {
+    foreach ($most_viewed_posts_ids as $post_id) {
+        $categories_ids[] = get_news_category_id($post_id);
+    }
+    return $categories_ids;
+}
+
+function get_news_category_id ($post_id) {
+    $category = get_the_terms( $post_id, 'news_category' );
+    $category_id = $category[0]->term_id;
+    return $category_id;
+}
+
+function get_most_viewed_posts_ids () {
+    $most_viewed_posts = newspaper_get_most_viewed("num=10 &echo=0 &return=array");
+    foreach ($most_viewed_posts as $post) {
+        $post_id = $post->ID;
+        $most_viewed_posts_ids[] =$post_id;
+    }
+    return $most_viewed_posts_ids;
+}
+
+/* Page view counter  */
+add_action('wp_head', 'newspaper_postviews');
+function newspaper_postviews() {
+
+    $meta_key       = 'views';
+    $who_count      = 1;
+    $exclude_bots   = 1;
+
+    global $user_ID, $post;
+    if(is_singular()) {
+        $id = (int)$post->ID;
+        static $post_views = false;
+        if($post_views) return true;
+        $post_views = (int)get_post_meta($id,$meta_key, true);
+        $should_count = false;
+        switch( (int)$who_count ) {
+            case 0: $should_count = true;
+                break;
+            case 1:
+                if( (int)$user_ID == 0 )
+                    $should_count = true;
+                break;
+            case 2:
+                if( (int)$user_ID > 0 )
+                    $should_count = true;
+                break;
+        }
+        if( (int)$exclude_bots==1 && $should_count ){
+            $useragent = $_SERVER['HTTP_USER_AGENT'];
+            $notbot = "Mozilla|Opera";
+            $bot = "Bot/|robot|Slurp/|yahoo";
+            if ( !preg_match("/$notbot/i", $useragent) || preg_match("!$bot!i", $useragent) )
+                $should_count = false;
+        }
+
+        if($should_count)
+            if( !update_post_meta($id, $meta_key, ($post_views+1)) ) add_post_meta($id, $meta_key, 1, true);
+    }
+    return true;
+}
+
+function newspaper_get_most_viewed( $args = '' ){
+    global $wpdb, $post;
+
+parse_str( $args, $i );
+
+    $num    = isset( $i['num'] )    ? preg_replace( '/[^0-9,\s]/', '', $i['num'] ) : 10; // 20,10 | 10
+    $key    = isset( $i['key'] )    ? sanitize_text_field($i['key']) : 'views';
+    $order  = isset( $i['order'] ) && in_array( strtoupper($i['order']), [ 'ASC', 1 ] )  ? 'ASC' : 'DESC';
+    $days   = isset( $i['days'] )   ? (int) $i['days'] : 0;
+    $format = isset( $i['format'] ) ? stripslashes( $i['format'] ) : '';
+    $cache  = isset( $i['cache'] );
+    $echo   = isset( $i['echo'] )   ? (int) $i['echo'] : 1;
+    $return = isset( $i['return'] ) ? $i['return'] : 'string';
+
+    if( $cache ){
+        $cache_key = (string) md5( __FUNCTION__ . serialize( $args ) );
+
+        if( $cache_out = wp_cache_get( $cache_key ) ){
+            if( $echo )
+                return print( $cache_out );
+            else
+                return $cache_out;
+        }
+    }
+
+    if( $days ){
+        $AND_days = "AND post_date > CURDATE() - INTERVAL $days DAY";
+        if( strlen( $days ) == 4 )
+            $AND_days = "AND YEAR(post_date)=$days";
+    }
+
+    $esc_key = esc_sql( $key );
+    $sql = "SELECT *, (pm.meta_value+0) AS views
+	FROM $wpdb->posts p
+		LEFT JOIN $wpdb->postmeta pm ON (pm.post_id = p.ID)
+	WHERE pm.meta_key = '$esc_key' $AND_days
+		AND p.post_type = 'news'
+		AND p.post_status = 'publish'
+	ORDER BY views $order LIMIT $num";
+
+    $posts = $wpdb->get_results( $sql );
+    if( ! $posts )
+        return false;
+
+    if( 'array' === $return )
+        return $posts;
+
+    $out = $x = '';
+    preg_match( '!{date:(.*?)}!', $format, $date_m );
+
+    foreach( $posts as $pst ){
+
+        $x = ( $x == 'li1' ) ? 'li2' : 'li1';
+
+        if( $pst->ID == $post->ID )
+            $x .= ' current-item';
+
+        $Title    = $pst->post_title;
+        $a1       = '<a href="' . get_permalink( $pst->ID ) . "\" title=\"{$pst->views} просмотров: $Title\">";
+        $a2       = '</a>';
+        $comments = $pst->comment_count;
+        $views    = $pst->views;
+
+        if( $format ){
+
+            $date    = apply_filters( 'the_time', mysql2date( $date_m[ 1 ], $pst->post_date ) );
+            $Sformat = str_replace( $date_m[ 0 ], $date, $format );
+            $Sformat = str_replace( [ '{a}', '{title}', '{/a}', '{comments}', '{views}' ], [ $a1, $Title, $a2, $comments, $views, ], $Sformat );
+        }
+        else
+            $Sformat = $a1 . $Title . $a2;
+
+        $out .= "<li class=\"$x\">$Sformat</li>";
+    }
+
+    if( $cache )
+        wp_cache_add( $cache_key, $out );
+
+    if( $echo )
+        echo $out;
+    else
+        return $out;
+}
+
+function get_news_from_category_id ($news_from_category) {
+    $category_id = $news_from_category->term_id;
+    return $category_id;
+}
+
+function get_popular_news_from_category () {
+    $news_from_category = get_field('popular_news_area');
+    return $news_from_category;
+}
+
+function get_news_category_posts($category, $num_of_posts = -1) {
+    if (!is_a($category, 'WP_Term')) return array();
+    $args = array(
+        'post_type' => 'casino_news',
+        'posts_per_page' => $num_of_posts,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'news_category',
+                'field' => 'term_id',
+                'terms' => $category->term_id,
+            )
+        )
+    );
+
+    $news = get_posts($args);
+    return $news;
+}
+
