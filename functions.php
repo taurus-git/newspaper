@@ -264,3 +264,32 @@ parse_str( $args, $i );
  * 1.2 - параметр return + небольшой рефакторинг
  * 1.1 - в num можно указывать offset
  */
+
+function get_news_category_id ($post_id) {
+    $category = get_the_terms( $post_id, 'news_category' );
+    $category_id = $category[0]->term_id;
+    return $category_id;
+}
+
+
+
+
+
+function get_news_category_posts($category, $num_of_posts = -1) {
+    if (!is_a($category, 'WP_Term')) return array();
+    $args = array(
+        'post_type' => 'casino_news',
+        'posts_per_page' => $num_of_posts,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'news_category',
+                'field' => 'term_id',
+                'terms' => $category->term_id,
+            )
+        )
+    );
+
+    $news = get_posts($args);
+    return $news;
+}
+

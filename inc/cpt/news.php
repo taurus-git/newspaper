@@ -319,6 +319,8 @@ if( function_exists('acf_add_local_field_group') ):
     ));
 
 
+
+
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -341,6 +343,15 @@ function newspaper_acf_blocks_init() {
             'render_template'   => 'template-parts/blocks/featured_posts/featured_posts.php',
             'category'          => 'formatting',
         ));
+
+        acf_register_block_type(array(
+            'name'              => 'popularnews',
+            'title'             => __('Popular news area'),
+            'description'       => __('A custom Popular News block.'),
+            'render_template'   => 'template-parts/blocks/popular_news/popular_news.php',
+            'category'          => 'formatting',
+        ));
+
     }
 }
 /*Start Hero Area*/
