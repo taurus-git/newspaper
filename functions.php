@@ -107,21 +107,19 @@ function get_taxonomy_link ($term) {
     return $link;
 }
 
-/* Подсчет количества посещений страниц
----------------------------------------------------------- */
-add_action('wp_head', 'kama_postviews');
-function kama_postviews() {
+/* Page view counter  */
+add_action('wp_head', 'newspaper_postviews');
+function newspaper_postviews() {
 
-    /* ------------ Настройки -------------- */
-    $meta_key       = 'views';  // Ключ мета поля, куда будет записываться количество просмотров.
-    $who_count      = 1;            // Чьи посещения считать? 0 - Всех. 1 - Только гостей. 2 - Только зарегистрированных пользователей.
-    $exclude_bots   = 1;            // Исключить ботов, роботов, пауков и прочую нечесть :)? 0 - нет, пусть тоже считаются. 1 - да, исключить из подсчета.
+    $meta_key       = 'views';
+    $who_count      = 1;
+    $exclude_bots   = 1;
 
     global $user_ID, $post;
     if(is_singular()) {
         $id = (int)$post->ID;
         static $post_views = false;
-        if($post_views) return true; // чтобы 1 раз за поток
+        if($post_views) return true;
         $post_views = (int)get_post_meta($id,$meta_key, true);
         $should_count = false;
         switch( (int)$who_count ) {
@@ -138,8 +136,8 @@ function kama_postviews() {
         }
         if( (int)$exclude_bots==1 && $should_count ){
             $useragent = $_SERVER['HTTP_USER_AGENT'];
-            $notbot = "Mozilla|Opera"; //Chrome|Safari|Firefox|Netscape - все равны Mozilla
-            $bot = "Bot/|robot|Slurp/|yahoo"; //Яндекс иногда как Mozilla представляется
+            $notbot = "Mozilla|Opera";
+            $bot = "Bot/|robot|Slurp/|yahoo";
             if ( !preg_match("/$notbot/i", $useragent) || preg_match("!$bot!i", $useragent) )
                 $should_count = false;
         }
@@ -150,33 +148,7 @@ function kama_postviews() {
     return true;
 }
 
-/**
- * Функция для вывода записей по произвольному полю содержащему числовое значение.
- *
- * Пример вызова:
- *     kama_get_most_viewed( "num=5 &key=views &cache=1 &format={a}{title}{/a} - {date:j.M.Y} ({views}) ({comments})" );
- *
- * @param string $args {
- *
- *     @type string     $key    (views)  Ключ произвольного поля, по значениям которого будет проходить выборка.
- *     @type int|string $num    (10)     Количество постов или offset для пагинации - 10 или 20,10.
- *     @type string     $order  (desc)   Порядок вывода записей. Может быть: asc|desc.
- *     @type string     $format  ('')    Формат выводимых ссылок. По дефолту такой: ({a}{title}{/a}).
- *                                       Можно использовать, например, такой:
- *                                       {date:j.M.Y} - {a}{title}{/a} ({views}, {comments}).
- *     @type int        $days   (0)      Число последних дней, записи которых нужно вывести
- *                                       по количеству просмотров. Если указать год (2011,2010),
- *                                       то будут отбираться популярные записи за этот год.
- *     @type int        $cache  (0)      Использовать кэш или нет.  Варианты 1 - кэширование включено, 0 - выключено (по дефолту).
- *     @type string     $echo   (1)      Выводить на экран или нет. Варианты 1 - выводить (по дефолту), 0 - вернуть для обработки (return).
- *     @type string     $return (string) Может быть: string|array. Позволяет вернуть массив объектов постов, а не готовый HTML.
- * }
- *
- * @return bool|int|mixed|string
- *
- * @ver 1.2
- */
-function kama_get_most_viewed( $args = '' ){
+function newspaper_get_most_viewed( $args = '' ){
     global $wpdb, $post;
 
 parse_str( $args, $i );
@@ -193,7 +165,6 @@ parse_str( $args, $i );
     if( $cache ){
         $cache_key = (string) md5( __FUNCTION__ . serialize( $args ) );
 
-        //получаем и отдаем кеш если он есть
         if( $cache_out = wp_cache_get( $cache_key ) ){
             if( $echo )
                 return print( $cache_out );
