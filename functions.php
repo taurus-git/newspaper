@@ -1,6 +1,7 @@
 <?php
 
 require_once 'inc/cpt/news.php';
+require_once 'classes/widgets/popular_news.php';
 
 add_action( 'wp_enqueue_scripts', 'add_theme_styles' );
 function add_theme_styles() {
@@ -286,7 +287,7 @@ function newspaper_register_wp_sidebars() {
     register_sidebar(
         array(
             'id' => 'info_side',
-            'name' => 'side',
+            'name' => 'Info side',
             'description' => 'Drag widgets here to add them to the sidebar.',
         )
     );
