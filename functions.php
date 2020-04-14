@@ -282,3 +282,14 @@ function get_news_category_posts($category, $num_of_posts = -1) {
     return $news;
 }
 
+function newspaper_register_wp_sidebars() {
+    register_sidebar(
+        array(
+            'id' => 'info_side',
+            'name' => 'side',
+            'description' => 'Drag widgets here to add them to the sidebar.',
+        )
+    );
+}
+
+add_action( 'widgets_init', 'newspaper_register_wp_sidebars' );
