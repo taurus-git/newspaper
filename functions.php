@@ -288,10 +288,6 @@ function newspaper_register_wp_sidebars() {
             'id' => 'info_side',
             'name' => 'side',
             'description' => 'Drag widgets here to add them to the sidebar.',
-            'before_widget' => '<div id="%1$s" class="side widget %2$s">',
-            'after_widget' => '</div>',
-            'before_title' => '<h3 class="widget-title">',
-            'after_title' => '</h3>'
         )
     );
 }
