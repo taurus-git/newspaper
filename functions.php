@@ -108,26 +108,15 @@ function get_taxonomy_link ($term) {
     return $link;
 }
 
-function get_most_viewed_posts_categories_ids ($most_viewed_posts_ids) {
-    foreach ($most_viewed_posts_ids as $post_id) {
-        $categories_ids[] = get_news_category_id($post_id);
-    }
-    return $categories_ids;
-}
-
 function get_news_category_id ($post_id) {
     $category = get_the_terms( $post_id, 'news_category' );
     $category_id = $category[0]->term_id;
     return $category_id;
 }
 
-function get_most_viewed_posts_ids () {
+function get_most_viewed_posts () {
     $most_viewed_posts = newspaper_get_most_viewed("num=10 &echo=0 &return=array");
-    foreach ($most_viewed_posts as $post) {
-        $post_id = $post->ID;
-        $most_viewed_posts_ids[] =$post_id;
-    }
-    return $most_viewed_posts_ids;
+    return $most_viewed_posts;
 }
 
 /* Page view counter  */
@@ -265,23 +254,6 @@ function get_popular_news_from_category () {
     return $news_from_category;
 }
 
-function get_news_category_posts($category, $num_of_posts = -1) {
-    if (!is_a($category, 'WP_Term')) return array();
-    $args = array(
-        'post_type' => 'casino_news',
-        'posts_per_page' => $num_of_posts,
-        'tax_query' => array(
-            array(
-                'taxonomy' => 'news_category',
-                'field' => 'term_id',
-                'terms' => $category->term_id,
-            )
-        )
-    );
-
-    $news = get_posts($args);
-    return $news;
-}
 
 function newspaper_register_wp_sidebars() {
     register_sidebar(
