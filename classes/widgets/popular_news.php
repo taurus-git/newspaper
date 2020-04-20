@@ -13,12 +13,12 @@ class newspaperTopPostsWidget extends WP_Widget {
         $title = apply_filters( 'widget_title', $instance['title'] );
         $posts_per_page = $instance['posts_per_page'];
 
-        echo $args['before_widget'];
+        echo '<div class="popular-news-widget mb-30">';
 
         if ( ! empty( $title ) )
-            echo $args['before_title'] . $title . $args['after_title'];
+            echo '<h3>' . $title . '</h3>';
         else
-            echo $args['before_title'] . $posts_per_page . ' Most Popular News' . $args['after_title'];
+            echo '<h3>' . $posts_per_page . ' Most Popular News' . '</h3>';
 
         $popular_news = newspaper_get_most_viewed("num=$posts_per_page &echo=0 &return=array");;
         if (empty($popular_news)) return;
@@ -46,7 +46,7 @@ class newspaperTopPostsWidget extends WP_Widget {
         }
 
         echo $output;
-        echo $args['after_widget'];
+        echo '</div>';
     }
 
     public function form( $instance ) {
@@ -58,11 +58,11 @@ class newspaperTopPostsWidget extends WP_Widget {
         }
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Заголовок</label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title</label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'posts_per_page' ); ?>">Количество постов:</label>
+            <label for="<?php echo $this->get_field_id( 'posts_per_page' ); ?>">Number of news:</label>
             <input id="<?php echo $this->get_field_id( 'posts_per_page' ); ?>" name="<?php echo $this->get_field_name( 'posts_per_page' ); ?>" type="text" value="<?php echo ($posts_per_page) ? esc_attr( $posts_per_page ) : '4'; ?>" size="3" />
         </p>
         <?php
