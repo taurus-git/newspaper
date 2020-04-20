@@ -261,6 +261,10 @@ function newspaper_register_wp_sidebars() {
             'id' => 'info_side',
             'name' => 'Info side',
             'description' => 'Drag widgets here to add them to the sidebar.',
+            'before_widget' => '<div class="popular-news-widget mb-30">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h3>',
+            'after_title'   => '</h3>',
         )
     );
 }

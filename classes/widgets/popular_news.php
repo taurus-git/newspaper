@@ -1,45 +1,54 @@
 <?php
-class trueTopPostsWidget extends WP_Widget {
+class newspaperTopPostsWidget extends WP_Widget {
 
-    /*
-     * создание виджета
-     */
     function __construct() {
         parent::__construct(
-            'true_top_widget',
-            'Популярные посты', // заголовок виджета
-            array( 'description' => 'Позволяет вывести посты, отсортированные по количеству комментариев в них.' ) // описание
+            'newspaper_top_widget',
+            'Popular News',
+            array( 'description' => 'Gets number of popular News.' )
         );
     }
 
-    /*
-     * фронтэнд виджета
-     */
     public function widget( $args, $instance ) {
-        $title = apply_filters( 'widget_title', $instance['title'] ); // к заголовку применяем фильтр (необязательно)
+        $title = apply_filters( 'widget_title', $instance['title'] );
         $posts_per_page = $instance['posts_per_page'];
 
         echo $args['before_widget'];
 
         if ( ! empty( $title ) )
             echo $args['before_title'] . $title . $args['after_title'];
+        else
+            echo $args['before_title'] . $posts_per_page . ' Most Popular News' . $args['after_title'];
 
-        $q = new WP_Query("posts_per_page=$posts_per_page&orderby=comment_count");
-        if( $q->have_posts() ):
-            ?><ul><?php
-            while( $q->have_posts() ): $q->the_post();
-                ?><li><a href="<?php the_permalink() ?>"><?php the_title() ?></a></li><?php
-            endwhile;
-            ?></ul><?php
-        endif;
-        wp_reset_postdata();
+        $popular_news = newspaper_get_most_viewed("num=$posts_per_page &echo=0 &return=array");;
+        if (empty($popular_news)) return;
 
+        $output = '';
+        $i = 0;
+
+        foreach ($popular_news as $news) {
+            $i++;
+            $id = $news->ID;
+            $link = get_permalink($id);
+            $title = esc_html(get_the_title($id));
+            $date_format = get_default_date_format();
+            $date = get_date($date_format);
+
+            $output .= sprintf('<div class="single-popular-post">
+                <a href="%s">
+                    <h6>
+                        <span>%s.</span>
+                        %s
+                    </h6>
+                </a>
+                <p>%s</p>
+            </div>', $link, $i, $title, $date );
+        }
+
+        echo $output;
         echo $args['after_widget'];
     }
 
-    /*
-     * бэкэнд виджета
-     */
     public function form( $instance ) {
         if ( isset( $instance[ 'title' ] ) ) {
             $title = $instance[ 'title' ];
@@ -54,26 +63,20 @@ class trueTopPostsWidget extends WP_Widget {
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'posts_per_page' ); ?>">Количество постов:</label>
-            <input id="<?php echo $this->get_field_id( 'posts_per_page' ); ?>" name="<?php echo $this->get_field_name( 'posts_per_page' ); ?>" type="text" value="<?php echo ($posts_per_page) ? esc_attr( $posts_per_page ) : '5'; ?>" size="3" />
+            <input id="<?php echo $this->get_field_id( 'posts_per_page' ); ?>" name="<?php echo $this->get_field_name( 'posts_per_page' ); ?>" type="text" value="<?php echo ($posts_per_page) ? esc_attr( $posts_per_page ) : '4'; ?>" size="3" />
         </p>
         <?php
     }
 
-    /*
-     * сохранение настроек виджета
-     */
     public function update( $new_instance, $old_instance ) {
         $instance = array();
         $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-        $instance['posts_per_page'] = ( is_numeric( $new_instance['posts_per_page'] ) ) ? $new_instance['posts_per_page'] : '5'; // по умолчанию выводятся 5 постов
+        $instance['posts_per_page'] = ( is_numeric( $new_instance['posts_per_page'] ) ) ? $new_instance['posts_per_page'] : '4';
         return $instance;
     }
 }
 
-/*
- * регистрация виджета
- */
-function true_top_posts_widget_load() {
-    register_widget( 'trueTopPostsWidget' );
+function newspaper_top_posts_widget_load() {
+    register_widget( 'newspaperTopPostsWidget' );
 }
-add_action( 'widgets_init', 'true_top_posts_widget_load' );
+add_action( 'widgets_init', 'newspaper_top_posts_widget_load' );
