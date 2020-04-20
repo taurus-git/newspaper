@@ -794,22 +794,22 @@ function get_small_single_post_markup_params($id) {
 function get_popular_news ( ) {
     $popular_news_from_category = get_popular_news_from_category ();
     $popular_news_category_id = get_news_from_category_id ($popular_news_from_category);
-
-    $most_viewed_posts_ids = get_most_viewed_posts_ids ();
-    $most_viewed_posts_categories_ids = get_most_viewed_posts_categories_ids ($most_viewed_posts_ids);
-
     $markup_params = get_popular_news_markup_params();
 
-    if ( in_array($popular_news_category_id, $most_viewed_posts_categories_ids) ) {
+    $most_viewed_posts = get_most_viewed_posts ();
+    $output = '';
 
-        $output = '';
+    foreach ($most_viewed_posts as $post) {
+        $post_id = $post->ID;
+        $taxonomy_id = get_news_category_id ($post_id);
 
-        foreach ($most_viewed_posts_ids as $post_id) {
-            $markup = get_news_markup($post_id, $markup_params);
-            $output .= '<div class="col-12 col-md-6">' . $markup  . '</div>';
+        if ( $popular_news_category_id == $taxonomy_id ) {
+                $markup = get_news_markup($post_id, $markup_params);
+                $output .= '<div class="col-12 col-md-6">' . $markup  . '</div>';
+            }
+
         }
 
-    }
     if (!$output) return;
     return $output;
 }
