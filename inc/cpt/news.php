@@ -364,7 +364,93 @@ if( function_exists('acf_add_local_field_group') ):
         'description' => '',
     ));
 
-
+    acf_add_local_field_group(array(
+        'key' => 'group_5e9e939641194',
+        'title' => 'Video post area',
+        'fields' => array(
+            array(
+                'key' => 'field_5e9e93af27a28',
+                'label' => 'Background image',
+                'name' => 'video-post-area_background_image',
+                'type' => 'image',
+                'instructions' => 'Add image here for setting video post area background',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+                'preview_size' => 'medium',
+                'library' => 'all',
+                'min_width' => '',
+                'min_height' => '',
+                'min_size' => '',
+                'max_width' => '',
+                'max_height' => '',
+                'max_size' => '',
+                'mime_types' => '',
+            ),
+            array(
+                'key' => 'field_5e9e98816cd63',
+                'label' => 'Video items',
+                'name' => 'video_items',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 3,
+                'layout' => 'table',
+                'button_label' => 'Add video',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5e9e98c26cd64',
+                        'label' => 'Video',
+                        'name' => 'video',
+                        'type' => 'text',
+                        'instructions' => 'Paste link to video from YouTube here',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'default_value' => '',
+                        'placeholder' => '',
+                        'prepend' => '',
+                        'append' => '',
+                        'maxlength' => '',
+                    ),
+                ),
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/videoposts',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -393,6 +479,13 @@ function newspaper_acf_blocks_init() {
             'title'             => __('Popular news area'),
             'description'       => __('A custom Popular News block.'),
             'render_template'   => 'template-parts/blocks/popular_news/popular_news.php',
+            'category'          => 'formatting',
+        ));
+        acf_register_block_type(array(
+            'name'              => 'videoposts',
+            'title'             => __('Video Posts area'),
+            'description'       => __('A custom Video Posts block.'),
+            'render_template'   => 'template-parts/blocks/video_posts/video_posts.php',
             'category'          => 'formatting',
         ));
 
@@ -826,3 +919,72 @@ function get_popular_news_markup_params() {
     return $params;
 }
 /*Popular News area end*/
+
+/*Video Post Area Start*/
+function url_exists( $url ) {
+    $headers = get_headers($url);
+    return stripos( $headers[0], "200 OK" ) ? true : false;
+}
+
+function get_youtube_id( $url ) {
+    $youtubeid = explode('v=', $url);
+    $youtubeid = explode('&', $youtubeid[1]);
+    $youtubeid = $youtubeid[0];
+    return $youtubeid;
+}
+
+function get_youtube_thumb( $id ) {
+    if ( url_exists( 'https://i.ytimg.com/vi_webp/' .$id . '/maxresdefault.webp' ) ) {
+        $image = 'https://i.ytimg.com/vi_webp/' .$id . '/maxresdefault.webp';
+    }
+    elseif ( url_exists( 'https://i.ytimg.com/vi_webp/' .$id . '/mqdefault.webp' ) ) {
+        $image = 'https://i.ytimg.com/vi_webp/' .$id . '/mqdefault.webp';
+    }
+    elseif ( url_exists( 'https://i.ytimg.com/vi/' .$id . '/maxresdefault.jpg' ) ) {
+        $image = 'https://i.ytimg.com/vi/' .$id . '/maxresdefault.jpg';
+    }
+    elseif ( url_exists( 'https://i.ytimg.com/vi/' .$id . '/mqdefault.jpg' ) ) {
+        $image = 'https://i.ytimg.com/vi/' .$id . '/mqdefault.jpg';
+    }
+    else {
+        $image = false;
+    }
+    return $image;
+}
+
+function get_videos_posts () {
+    $videos = get_field('video_items');
+    if (empty($videos)) return;
+
+    $output ='';
+    $args = array();
+    foreach ($videos as $video) {
+        $youtube_url = $video['video'];
+        $id = get_youtube_id($youtube_url);
+        $thumb = get_youtube_thumb($id);
+        $args[$youtube_url] = $thumb;
+    }
+
+    $output = get_videos_posts_markup ($args);
+    return $output;
+}
+
+function get_videos_posts_markup ($args) {
+    if (empty($args)) return;
+
+    $output = '';
+    foreach ($args as $youtube_url => $thumb) {
+        $output .= sprintf(
+            '<div class="col-12 col-sm-6 col-md-4">
+            <div class="single-video-post">
+                <img src="%s" alt="">1
+                <div class="videobtn">
+                    <a href="%s" class="videoPlayer"><i class="fa fa-play" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>', $thumb,  $youtube_url );
+    }
+    return $output;
+}
+
+/*Video Post Area End*/
