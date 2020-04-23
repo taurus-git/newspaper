@@ -40,7 +40,7 @@ if ( function_exists( 'add_image_size' ) ) {
     add_image_size( 'single_featured_post_2', 287, 199, true ); // Кадрирование изображения
     add_image_size( 'small_featured_post', 90, 90, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post', 350, 307, true ); // Кадрирование изображения
-    add_image_size( 'single_blog_post_vertical', 255, 312, true ); // Кадрирование изображения
+    add_image_size( 'single_blog_post_vertical', 530, 648, true ); // Кадрирование изображения
     add_image_size( 'single_blog_post_sidebar', 255, 101, true ); // Кадрирование изображения
 }
 
@@ -88,8 +88,8 @@ function get_time () {
     return $time;
 }
 
-function get_date ($date_format) {
-    $date = get_the_date($date_format);
+function get_date ($date_format, $id) {
+    $date = get_the_date($date_format, $id);
     return $date;
 }
 

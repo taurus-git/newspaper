@@ -451,6 +451,96 @@ if( function_exists('acf_add_local_field_group') ):
         'active' => true,
         'description' => '',
     ));
+    acf_add_local_field_group(array(
+        'key' => 'group_5ea181203df40',
+        'title' => 'Editors News list',
+        'fields' => array(
+            array(
+                'key' => 'field_5ea1813a2d27c',
+                'label' => 'Editors Pick News list',
+                'name' => 'editors_pick_news_list',
+                'type' => 'repeater',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'collapsed' => '',
+                'min' => 0,
+                'max' => 0,
+                'layout' => 'table',
+                'button_label' => '',
+                'sub_fields' => array(
+                    array(
+                        'key' => 'field_5ea181872d27d',
+                        'label' => 'Single News',
+                        'name' => 'single_news',
+                        'type' => 'relationship',
+                        'instructions' => '',
+                        'required' => 0,
+                        'conditional_logic' => 0,
+                        'wrapper' => array(
+                            'width' => '',
+                            'class' => '',
+                            'id' => '',
+                        ),
+                        'post_type' => '',
+                        'taxonomy' => '',
+                        'filters' => array(
+                            0 => 'search',
+                            1 => 'post_type',
+                            2 => 'taxonomy',
+                        ),
+                        'elements' => '',
+                        'min' => '1',
+                        'max' => '1',
+                        'return_format' => 'object',
+                    ),
+                ),
+            ),
+            array(
+                'key' => 'field_5ea1a279911fa',
+                'label' => 'World News',
+                'name' => 'world_news',
+                'type' => 'number',
+                'instructions' => 'Select the number of news to display (6 news will be displayed by default)',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'default_value' => 6,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'min' => 1,
+                'max' => 10,
+                'step' => 1,
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/editorialpostarea',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -486,6 +576,13 @@ function newspaper_acf_blocks_init() {
             'title'             => __('Video Posts area'),
             'description'       => __('A custom Video Posts block.'),
             'render_template'   => 'template-parts/blocks/video_posts/video_posts.php',
+            'category'          => 'formatting',
+        ));
+        acf_register_block_type(array(
+            'name'              => 'editorialpostarea',
+            'title'             => __('Editorial post area'),
+            'description'       => __('A custom Editorial post area block.'),
+            'render_template'   => 'template-parts/blocks/editorial_post_area/editorial_post_area.php',
             'category'          => 'formatting',
         ));
 
@@ -614,7 +711,7 @@ function get_first_news($term_slug, $num_of_post) {
     if ( count($news_by_term) >= 1 ) {
         $first_news = array_slice($news_by_term, 0, 1);
         $first_news_id = $first_news[0]->ID;
-        $markup_params = get_first_news_markup_params($first_news_id);
+        $markup_params = get_first_news_markup_params();
         $first_news_markup = get_first_news_markup($first_news_id, $markup_params);
 
         return $first_news_markup;
@@ -681,7 +778,7 @@ function get_first_news_markup($id, $markup_params) {
     return ob_get_clean();
 }
 
-function get_first_news_markup_params($id) {
+function get_first_news_markup_params() {
     $params = array(
         'class' => 'single-blog-post featured-post',
         'image_size' => 'single_featured_post',
@@ -698,14 +795,14 @@ function get_featured_posts ($term_slug, $num_of_post) {
 
     if ( !empty($first_news) ) {
         $all_news_by_term = get_news_by_term($term_slug, $num_of_post);
-        $news_by_term = array_slice($all_news_by_term, 1);
+        $news_by_term = array_slice($all_news_by_term, 1);//get all news excerpt the first
 
         if ( count($news_by_term) >= 1 ) {
             $output = '';
 
             foreach ($news_by_term as $single_news) {
                 $id = $single_news->ID;
-                $markup_params = get_featured_posts_markup_params($id);
+                $markup_params = get_featured_posts_markup_params();
                 $markup = get_news_markup($id, $markup_params);
                 $output .= $markup;
             }
@@ -731,20 +828,24 @@ function get_news_markup($id, $markup_params) {
             $term_link = get_taxonomy_link ($term);
         }
     }
-    $title = esc_html( get_the_title($id) );
+    if ($markup_params['show_title']) {
+        $description = esc_html( get_the_title($id) );
+    } else {
+        $description = excerpt(21, $id);
+    }
+
     $show_author = $markup_params['show_author'];
     if ($show_author) {
         $author_id = get_author_id ($id);
         $author_name = get_author_full_name ($author_id);
     }
 
-    $post = get_post($id);
-    $description = $post->post_content;
-    $description = excerpt(21, $id);
-
     $show_post_comments = $markup_params['show_post_comments'];
     $show_date = $markup_params['show_date'];
-
+    if($show_date){
+        $date_format = get_default_date_format();
+        $date = get_the_date($date_format, $id);
+    }
     ob_start();?>
 
     <div class="<?php echo $class; ?>">
@@ -768,6 +869,9 @@ function get_news_markup($id, $markup_params) {
                         <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
                     </div>
                 <?php endif; ?>
+                <?php if ($show_date): ?>
+                    <div class="post-date"><a href="#"><?php echo $date; ?></a></div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -775,7 +879,7 @@ function get_news_markup($id, $markup_params) {
     return ob_get_clean();
 }
 
-function get_featured_posts_markup_params($id) {
+function get_featured_posts_markup_params() {
     $params = array(
         'class' => 'single-blog-post featured-post-2',
         'image_size' => 'single_featured_post_2',
@@ -812,11 +916,13 @@ function get_news_by_term($term_slug, $num_of_posts) {
 
 function get_small_single_post () {
     $news_list = get_field('news_list');
+    if (empty($news_list)) return;
+
     $output = '';
     foreach ($news_list as $news) {
         $single_news = $news["single_news"][0];
         $id = $single_news->ID;
-        $markup_params = get_small_single_post_markup_params($id);
+        $markup_params = get_small_single_post_markup_params();
         $markup = get_small_single_post_markup ($news, $markup_params);
         $output .= $markup;
     }
@@ -846,7 +952,7 @@ function get_small_single_post_markup ($news, $markup_params) {
     $show_date = $markup_params['show_date'];
     $time = get_time();
     $date_format = 'F j';
-    $date = get_date($date_format);
+    $date = get_date($date_format, $id);
 
     ob_start();?>
     <!-- Single Featured Post -->
@@ -873,7 +979,7 @@ function get_small_single_post_markup ($news, $markup_params) {
     return ob_get_clean();
 }
 
-function get_small_single_post_markup_params($id) {
+function get_small_single_post_markup_params() {
     $params = array(
         'image_size' => 'small_featured_post',
         'show_taxonomy_name' => true,
@@ -988,3 +1094,83 @@ function get_videos_posts_markup ($args) {
 }
 
 /*Video Post Area End*/
+
+/*Editorial Post Area Start*/
+function get_editors_pick_news () {
+    $news_list = get_field('editors_pick_news_list');
+    if (empty($news_list)) return;
+
+    $output = '';
+    foreach ($news_list as $news) {
+        $id = $news["single_news"][0];
+        $markup_params = get_editors_pick_news_markup_params();
+        $markup =  get_news_markup($id, $markup_params) ;
+        $output .= '<div class="col-12 col-lg-4">' . $markup . '</div>';
+    }
+
+    if (!$output) return;
+    return  $output;
+}
+
+function get_editors_pick_news_markup_params() {
+    $params = array(
+        'class' => 'single-blog-post',
+        'image_size' => 'single_blog_post_vertical',
+        'show_taxonomy_name' => false,
+        'show_author' => false,
+        'show_post_comments' => false,
+        'show_date' => true,
+        'show_title' => true,
+    );
+    return $params;
+}
+
+function get_world_news() {
+    $number_of_world_news = get_number_of_world_news_field();
+    $world_news = get_news($number_of_world_news);
+    if (empty($world_news)) return;
+
+    $output = '';
+    foreach ($world_news as $news) {
+        $id = $news->ID;
+        $markup_params = get_world_news_markup_params();
+        $markup = get_news_markup($id, $markup_params);
+        $output .= $markup;
+    }
+
+    if (!$output) return;
+    return $output;
+}
+
+
+function get_news($numberposts = 6) {
+    $args = ( array(
+        'post_type'   => 'news',
+        'numberposts' => $numberposts,
+        'orderby'     => 'date',
+        'order'       => 'DESC',
+    ) );
+
+    $posts = get_posts($args);
+    return $posts;
+}
+
+function get_number_of_world_news_field(){
+    $number = get_field('world_news');
+    return $number;
+}
+
+function get_world_news_markup_params() {
+    $params = array(
+        'class' => 'single-blog-post style-2',
+        'image_size' => 'single_blog_post_sidebar',
+        'show_taxonomy_name' => false,
+        'show_author' => false,
+        'show_post_comments' => false,
+        'show_date' => true,
+        'show_title' => true,
+    );
+    return $params;
+}
+
+/*Editorial Post Area End*/
