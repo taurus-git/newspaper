@@ -32,7 +32,7 @@ class newspaperTopPostsWidget extends WP_Widget {
             $link = get_permalink($id);
             $title = esc_html(get_the_title($id));
             $date_format = get_default_date_format();
-            $date = get_date($date_format);
+            $date = get_date($date_format, $id);
 
             $output .= sprintf('<div class="single-popular-post">
                 <a href="%s">
