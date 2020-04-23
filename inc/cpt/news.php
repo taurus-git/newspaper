@@ -181,6 +181,21 @@ if( function_exists('acf_add_local_field_group') ):
                 'max_size' => '',
                 'mime_types' => '',
             ),
+            array(
+                'key' => 'field_5ea1b945b5d5b',
+                'label' => 'Link',
+                'name' => 'hero_area_banner_link',
+                'type' => 'link',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+            ),
         ),
         'location' => array(
             array(
@@ -541,6 +556,64 @@ if( function_exists('acf_add_local_field_group') ):
         'active' => true,
         'description' => '',
     ));
+    acf_add_local_field_group(array(
+        'key' => 'group_5ea1b2812ce53',
+        'title' => 'Banner in footer',
+        'fields' => array(
+            array(
+                'key' => 'field_5ea1b28daa511',
+                'label' => 'Banner in footer field',
+                'name' => 'banner_in_footer_field',
+                'type' => 'file',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+                'library' => 'all',
+                'min_size' => '',
+                'max_size' => '',
+                'mime_types' => '',
+            ),
+            array(
+                'key' => 'field_5ea1b56e81f43',
+                'label' => 'Link',
+                'name' => 'footer_banner_link',
+                'type' => 'link',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'return_format' => 'array',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'block',
+                    'operator' => '==',
+                    'value' => 'acf/footerbanner',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
@@ -583,6 +656,13 @@ function newspaper_acf_blocks_init() {
             'title'             => __('Editorial post area'),
             'description'       => __('A custom Editorial post area block.'),
             'render_template'   => 'template-parts/blocks/editorial_post_area/editorial_post_area.php',
+            'category'          => 'formatting',
+        ));
+        acf_register_block_type(array(
+            'name'              => 'footerbanner',
+            'title'             => __('Banner in footer area'),
+            'description'       => __('A custom banner in footer area block.'),
+            'render_template'   => 'template-parts/blocks/footer_banner/footer_banner.php',
             'category'          => 'formatting',
         ));
 
@@ -690,10 +770,15 @@ function get_hero_area_banner () {
     $hero_area_banner = get_field('hero_area_banner_field');
     if( empty($hero_area_banner) ) return;
 
+    $link = get_field('hero_area_banner_link');
+    if( $link ) {
+        $link_url = $link['url'];
+        $link_target = $link['target'] ? $link['target'] : '_self';
+    }
     ob_start();?>
     <div class="col-12 col-lg-4">
         <div class="hero-add">
-            <a href="#">
+            <a href="<?php echo esc_url( $link_url ); ?>" target="<?php echo esc_attr( $link_target ); ?>">
                 <img src="<?php echo $hero_area_banner['url'];?>"
                      alt="<?php echo $hero_area_banner['alt'];?>">
             </a>
@@ -1174,3 +1259,34 @@ function get_world_news_markup_params() {
 }
 
 /*Editorial Post Area End*/
+
+/*Footer Add Area Start*/
+function get_footer_area_banner () {
+    $footer_area_banner = get_field('banner_in_footer_field');
+    if( empty($footer_area_banner) ) return;
+
+    $link = get_field('footer_banner_link');
+    if( $link ) {
+        $link_url = $link['url'];
+        $link_target = $link['target'] ? $link['target'] : '_self';
+    }
+    ob_start();?>
+    <div class="footer-add-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="footer-add">
+                        <a href="<?php echo esc_url( $link_url ); ?>" target="<?php echo esc_attr( $link_target ); ?>">
+                            <img src="<?php echo $footer_area_banner['url'];?>"
+                             alt="<?php echo $footer_area_banner['alt'];?>">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/*Footer Add Area End*/
