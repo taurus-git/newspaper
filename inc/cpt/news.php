@@ -505,9 +505,9 @@ if( function_exists('acf_add_local_field_group') ):
         'location' => array(
             array(
                 array(
-                    'param' => 'post_template',
+                    'param' => 'block',
                     'operator' => '==',
-                    'value' => 'page-templates/home.php',
+                    'value' => 'acf/editorialpostarea',
                 ),
             ),
         ),
@@ -555,6 +555,13 @@ function newspaper_acf_blocks_init() {
             'title'             => __('Video Posts area'),
             'description'       => __('A custom Video Posts block.'),
             'render_template'   => 'template-parts/blocks/video_posts/video_posts.php',
+            'category'          => 'formatting',
+        ));
+        acf_register_block_type(array(
+            'name'              => 'editorialpostarea',
+            'title'             => __('Editorial post area'),
+            'description'       => __('A custom Editorial post area block.'),
+            'render_template'   => 'template-parts/blocks/editorial_post_area/editorial_post_area.php',
             'category'          => 'formatting',
         ));
 
@@ -800,16 +807,17 @@ function get_news_markup($id, $markup_params) {
             $term_link = get_taxonomy_link ($term);
         }
     }
-    $title = esc_html( get_the_title($id) );
+    if ($markup_params['show_title']) {
+        $description = esc_html( get_the_title($id) );
+    } else {
+        $description = excerpt(21, $id);
+    }
+
     $show_author = $markup_params['show_author'];
     if ($show_author) {
         $author_id = get_author_id ($id);
         $author_name = get_author_full_name ($author_id);
     }
-
-    $post = get_post($id);
-    $description = $post->post_content;
-    $description = excerpt(21, $id);
 
     $show_post_comments = $markup_params['show_post_comments'];
     $show_date = $markup_params['show_date'];
@@ -1105,6 +1113,7 @@ function get_editors_pick_news_markup_params() {
         'show_author' => false,
         'show_post_comments' => false,
         'show_date' => true,
+        'show_title' => true,
     );
     return $params;
 }
