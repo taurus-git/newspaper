@@ -501,6 +501,27 @@ if( function_exists('acf_add_local_field_group') ):
                     ),
                 ),
             ),
+            array(
+                'key' => 'field_5ea1a279911fa',
+                'label' => 'World News',
+                'name' => 'world_news',
+                'type' => 'number',
+                'instructions' => 'Select the number of news to display (6 news will be displayed by default)',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'default_value' => 6,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+                'min' => 1,
+                'max' => 10,
+                'step' => 1,
+            ),
         ),
         'location' => array(
             array(
@@ -1075,20 +1096,6 @@ function get_videos_posts_markup ($args) {
 /*Video Post Area End*/
 
 /*Editorial Post Area Start*/
-
-/*function get_world_news($numberposts = 6) {
-    $args = ( array(
-        'post_type'   => 'news',
-        'numberposts' => $numberposts,
-        'orderby'     => 'date',
-        'order'       => 'DESC',
-    ) );
-
-    $posts = get_posts($args);
-    return $posts;
-}*/
-
-
 function get_editors_pick_news () {
     $news_list = get_field('editors_pick_news_list');
     if (empty($news_list)) return;
@@ -1118,6 +1125,52 @@ function get_editors_pick_news_markup_params() {
     return $params;
 }
 
+function get_world_news() {
+    $number_of_world_news = get_number_of_world_news_field();
+    $world_news = get_news($number_of_world_news);
+    if (empty($world_news)) return;
 
+    $output = '';
+    foreach ($world_news as $news) {
+        $id = $news->ID;
+        $markup_params = get_world_news_markup_params();
+        $markup = get_news_markup($id, $markup_params);
+        $output .= $markup;
+    }
+
+    if (!$output) return;
+    return $output;
+}
+
+
+function get_news($numberposts = 6) {
+    $args = ( array(
+        'post_type'   => 'news',
+        'numberposts' => $numberposts,
+        'orderby'     => 'date',
+        'order'       => 'DESC',
+    ) );
+
+    $posts = get_posts($args);
+    return $posts;
+}
+
+function get_number_of_world_news_field(){
+    $number = get_field('world_news');
+    return $number;
+}
+
+function get_world_news_markup_params() {
+    $params = array(
+        'class' => 'single-blog-post style-2',
+        'image_size' => 'single_blog_post_sidebar',
+        'show_taxonomy_name' => false,
+        'show_author' => false,
+        'show_post_comments' => false,
+        'show_date' => true,
+        'show_title' => true,
+    );
+    return $params;
+}
 
 /*Editorial Post Area End*/

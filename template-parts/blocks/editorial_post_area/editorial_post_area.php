@@ -1,5 +1,6 @@
 <?php
 $editors_pick_news = get_editors_pick_news ();
+$world_news = get_world_news();
 ?>
 <!-- ##### Editorial Post Area Start ##### -->
 <div class="editors-pick-post-area section-padding-80-50">
@@ -19,82 +20,7 @@ $editors_pick_news = get_editors_pick_news ();
                 <div class="section-heading">
                     <h6>World News</h6>
                 </div>
-
-                <!-- Single Post -->
-                <div class="single-blog-post style-2">
-                    <div class="post-thumb">
-                        <a href="#"><img src="img/bg-img/7.jpg" alt=""></a>
-                    </div>
-                    <div class="post-data">
-                        <a href="#" class="post-title">
-                            <h6>Orci varius natoque penatibus et magnis</h6>
-                        </a>
-                        <div class="post-meta">
-                            <div class="post-date"><a href="#">February 11, 2018</a></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Single Post -->
-                <div class="single-blog-post style-2">
-                    <div class="post-thumb">
-                        <a href="#"><img src="img/bg-img/8.jpg" alt=""></a>
-                    </div>
-                    <div class="post-data">
-                        <a href="#" class="post-title">
-                            <h6>Orci varius natoque penatibus et magnis</h6>
-                        </a>
-                        <div class="post-meta">
-                            <div class="post-date"><a href="#">February 11, 2018</a></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Single Post -->
-                <div class="single-blog-post style-2">
-                    <div class="post-thumb">
-                        <a href="#"><img src="img/bg-img/9.jpg" alt=""></a>
-                    </div>
-                    <div class="post-data">
-                        <a href="#" class="post-title">
-                            <h6>Orci varius natoque penatibus et magnis</h6>
-                        </a>
-                        <div class="post-meta">
-                            <div class="post-date"><a href="#">February 11, 2018</a></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Single Post -->
-                <div class="single-blog-post style-2">
-                    <div class="post-thumb">
-                        <a href="#"><img src="img/bg-img/10.jpg" alt=""></a>
-                    </div>
-                    <div class="post-data">
-                        <a href="#" class="post-title">
-                            <h6>Orci varius natoque penatibus et magnis</h6>
-                        </a>
-                        <div class="post-meta">
-                            <div class="post-date"><a href="#">February 11, 2018</a></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Single Post -->
-                <div class="single-blog-post style-2">
-                    <div class="post-thumb">
-                        <a href="#"><img src="img/bg-img/11.jpg" alt=""></a>
-                    </div>
-                    <div class="post-data">
-                        <a href="#" class="post-title">
-                            <h6>Orci varius natoque penatibus et magnis</h6>
-                        </a>
-                        <div class="post-meta">
-                            <div class="post-date"><a href="#">February 11, 2018</a></div>
-                        </div>
-                    </div>
-                </div>
-
+                <?php echo $world_news; ?>
             </div>
         </div>
     </div>
