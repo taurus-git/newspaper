@@ -268,6 +268,18 @@ function newspaper_register_wp_sidebars() {
             'after_title'   => '',
         )
     );
+
+    register_sidebar(
+        array(
+            'id' => 'footer_area',
+            'name' => 'Footer area',
+            'description' => 'Drag widgets here to add them to the sidebar in footer.',
+            'before_widget' => '',
+            'after_widget'  => '',
+            'before_title'  => '',
+            'after_title'   => '',
+        )
+    );
 }
 
 add_action( 'widgets_init', 'newspaper_register_wp_sidebars' );
