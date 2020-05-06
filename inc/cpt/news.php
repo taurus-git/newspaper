@@ -614,6 +614,72 @@ if( function_exists('acf_add_local_field_group') ):
         'description' => '',
     ));
 
+    acf_add_local_field_group(array(
+        'key' => 'group_5eac16a303963',
+        'title' => 'Category widget',
+        'fields' => array(
+            array(
+                'key' => 'field_5eac397611dfc',
+                'label' => 'Categories group title',
+                'name' => 'categories-group-title',
+                'type' => 'text',
+                'instructions' => '',
+                'required' => 1,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'default_value' => '',
+                'placeholder' => 'Add some title',
+                'prepend' => '',
+                'append' => '',
+                'maxlength' => '',
+            ),
+            array(
+                'key' => 'field_5eac18a9d9d01',
+                'label' => 'Category widget',
+                'name' => 'categories_widget',
+                'type' => 'taxonomy',
+                'instructions' => 'Mark down a few categories to display in widget',
+                'required' => 1,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'taxonomy' => 'news_category',
+                'field_type' => 'checkbox',
+                'add_term' => 1,
+                'save_terms' => 0,
+                'load_terms' => 0,
+                'return_format' => 'object',
+                'multiple' => 0,
+                'allow_null' => 0,
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'widget',
+                    'operator' => '==',
+                    'value' => 'categories_widget',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
+
 endif;
 
 add_action('acf/init', 'newspaper_acf_blocks_init');
