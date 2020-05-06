@@ -15,7 +15,7 @@ $popular_news = get_popular_news ();
                 </div>
             </div>
 
-            <?php get_sidebar('Info side'); ?>
+            <?php get_sidebar('info_side'); ?>
         </div>
     </div>
 </div>

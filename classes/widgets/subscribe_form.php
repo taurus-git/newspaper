@@ -1,9 +1,9 @@
 <?php
-class trueTopPostsWidget extends WP_Widget {
+class subscribeFormWidget extends WP_Widget {
 
     function __construct() {
         parent::__construct(
-            'true_top_widget',
+            'subscribe_form_widget',
             'Subscribe form',
             array( 'description' => 'Shows subscribe form. Paste shortcode here.' )
         );
@@ -67,7 +67,7 @@ class trueTopPostsWidget extends WP_Widget {
     }
 }
 
-function true_top_posts_widget_load() {
-    register_widget( 'trueTopPostsWidget' );
+function subscribe_form_widget_load() {
+    register_widget( 'subscribeFormWidget' );
 }
-add_action( 'widgets_init', 'true_top_posts_widget_load' );
+add_action( 'widgets_init', 'subscribe_form_widget_load' );
