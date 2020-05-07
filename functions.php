@@ -4,6 +4,7 @@ require_once 'inc/cpt/news.php';
 require_once 'classes/widgets/popular_news.php';
 require_once 'classes/widgets/subscribe_form.php';
 require_once 'classes/widgets/categories.php';
+require_once 'inc/theme_options.php';
 
 add_action( 'wp_enqueue_scripts', 'add_theme_styles' );
 function add_theme_styles() {

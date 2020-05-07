@@ -1,3 +1,8 @@
+<?php
+$header_logo = get_field('header_logo', 'options');
+$header_logo_url = $header_logo['url'];
+$header_logo_alt = $header_logo['alt'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,13 +32,13 @@
                     <div class="col-12">
                         <div class="top-header-content d-flex align-items-center justify-content-between">
                             <!-- Logo -->
-                            <div class="logo">
-                                <a href="<?php echo get_home_url(null, '/');?>">
-                                    <!--TODO: add alt value-->
-                                    <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
-                                </a>
-                            </div>
-
+                            <?php if (!empty($header_logo)):?>
+                                <div class="logo">
+                                    <a href="<?php echo get_home_url(null, '/');?>">
+                                        <img src="<?php echo $header_logo_url;?>" alt="<?php echo $header_logo_alt?>">
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                             <!-- Login Search Area -->
                             <div class="login-search-area d-flex align-items-center">
                                 <!-- Login -->
@@ -64,13 +69,13 @@
                     <nav class="classy-navbar justify-content-between" id="newspaperNav">
 
                         <!-- Logo -->
-                        <div class="logo">
-                            <a href="<?php echo get_home_url(null, '/');?>">
-                                <!--TODO: add alt value-->
-                                <!--TODO: add possibility to change logo-->
-                                <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
-                            </a>
-                        </div>
+                        <?php if (!empty($header_logo)):?>
+                            <div class="logo">
+                                <a href="<?php echo get_home_url(null, '/');?>">
+                                    <img src="<?php echo $header_logo_url;?>" alt="<?php echo $header_logo_alt?>">
+                                </a>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
