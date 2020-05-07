@@ -917,8 +917,8 @@ function get_first_news_markup($id, $markup_params) {
                     <?php if($show_post_comments): ?>
                         <!-- Post Like & Post Comment -->
                         <div class="d-flex align-items-center">
-                            <a href="#" class="post-like"><img src="img/core-img/like.png" alt=""> <span>392</span></a>
-                            <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
+                            <a href="#" class="post-like"><img src="<?php bloginfo('template_url');?>/assets/img/core-img/like.png" alt=""> <span>392</span></a>
+                            <a href="#" class="post-comment"><img src="<?php bloginfo('template_url');?>/assets/img/core-img/chat.png" alt=""> <span>10</span></a>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1016,8 +1016,8 @@ function get_news_markup($id, $markup_params) {
                 <?php if($show_post_comments): ?>
                     <!-- Post Like & Post Comment -->
                     <div class="d-flex align-items-center">
-                        <a href="#" class="post-like"><img src="img/core-img/like.png" alt=""> <span>392</span></a>
-                        <a href="#" class="post-comment"><img src="img/core-img/chat.png" alt=""> <span>10</span></a>
+                        <a href="#" class="post-like"><img src="<?php bloginfo('template_url');?>/assets/img/core-img/like.png" alt=""> <span>392</span></a>
+                        <a href="#" class="post-comment"><img src="<?php bloginfo('template_url');?>/assets/img/core-img/chat.png" alt=""> <span>10</span></a>
                     </div>
                 <?php endif; ?>
                 <?php if ($show_date): ?>
