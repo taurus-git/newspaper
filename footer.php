@@ -1,5 +1,8 @@
-
-
+<?php
+$footer_logo = get_field('footer_logo', 'options');
+$footer_logo_url = $footer_logo['url'];
+$footer_logo_alt = $footer_logo['alt'];
+?>
 <!-- ##### Footer Area Start ##### -->
 <footer class="footer-area">
 
@@ -11,17 +14,28 @@
                 <div class="col-12 col-sm-6 col-lg-4">
                     <div class="footer-widget-area mt-80">
                         <!-- Footer Logo -->
-                        <div class="footer-logo">
-                            <a href="<?php echo get_home_url(null, '/');?>">
-                                <img src="<?php bloginfo('template_url');?>/assets/img/core-img/logo.png" alt="">
-                            </a>
-                        </div>
+                        <?php if (!empty($footer_logo)):?>
+                            <div class="footer-logo">
+                                <a href="<?php echo get_home_url(null, '/');?>">
+                                    <img src="<?php echo $footer_logo_url; ?>" alt="<?php echo $footer_logo_alt; ?>">
+                                </a>
+                            </div>
+                        <?php endif; ?>
                         <!-- List -->
-                        <ul class="list">
-                            <li><a href="mailto:contact@youremail.com">contact@youremail.com</a></li>
-                            <li><a href="tel:+4352782883884">+43 5278 2883 884</a></li>
-                            <li><a href="http://yoursitename.com">www.yoursitename.com</a></li>
-                        </ul>
+                        <?php if (have_rows('contacts','option')): ?>
+                            <ul class="list">
+                                <?php while (have_rows('contacts','option')) : the_row();
+                                    $contact = get_sub_field('contact','option');
+                                    $link = get_sub_field('link','option');
+                                    ?>
+                                    <li>
+                                        <a href="<?php echo $link; ?>">
+                                            <?php echo $contact;?>
+                                        </a>
+                                    </li>
+                                <?php endwhile;?>
+                            </ul>
+                        <?php endif;?>
                     </div>
                 </div>
 
