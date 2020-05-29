@@ -37,13 +37,13 @@ if ( function_exists( 'add_theme_support' ) ) {
 }
 
 if ( function_exists( 'add_image_size' ) ) {
-    add_image_size( 'single_featured_big', 530, 420, true ); // Кадрирование изображения
-    add_image_size( 'single_featured_post', 420, 333, true ); // Кадрирование изображения
-    add_image_size( 'single_featured_post_2', 287, 199, true ); // Кадрирование изображения
-    add_image_size( 'small_featured_post', 90, 90, true ); // Кадрирование изображения
-    add_image_size( 'single_blog_post', 350, 307, true ); // Кадрирование изображения
-    add_image_size( 'single_blog_post_vertical', 530, 648, true ); // Кадрирование изображения
-    add_image_size( 'single_blog_post_sidebar', 255, 101, true ); // Кадрирование изображения
+    add_image_size( 'single_featured_big', 530, 420, true );
+    add_image_size( 'single_featured_post', 420, 333, true );
+    add_image_size( 'single_featured_post_2', 287, 199, true );
+    add_image_size( 'small_featured_post', 90, 90, true );
+    add_image_size( 'single_blog_post', 350, 307, true );
+    add_image_size( 'single_blog_post_vertical', 530, 648, true );
+    add_image_size( 'single_blog_post_sidebar', 255, 101, true );
 }
 
 function excerpt($limit, $id) {
